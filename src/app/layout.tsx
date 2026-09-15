@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
-// Fonts are the create-next-app defaults for now. Spec 01 swaps these for Inter
-// plus a display face and replaces the token set in globals.css.
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Archivo carries a width axis, which is what lets the big uppercase headings
+// sit slightly condensed and heavy like the refs without a second font file.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
+  display: "swap",
+  axes: ["wdth"],
 });
 
 // Full title template, OG image and theme colour come in spec 03.
@@ -23,11 +28,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    // `dark` is here only so shadcn's dark: utilities resolve. There is no
+    // light theme to toggle to.
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${inter.variable} ${archivo.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-bg text-text">
+        <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
+      </body>
     </html>
   );
 }
