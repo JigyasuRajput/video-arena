@@ -5,15 +5,12 @@ import { Hero } from "@/components/explore/hero";
 import { ToolTiles } from "@/components/explore/tool-tiles";
 import { MediaWall } from "@/components/explore/media-wall";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSamples, samplesByAspect } from "@/lib/samples";
+import { exploreOrder, samplesByAspect } from "@/lib/samples";
 
 export default function ExplorePage() {
-  const samples = getSamples();
-  // Videos read first on the wall, then images, so it opens on motion.
-  const ordered = [
-    ...samples.filter((sample) => sample.kind === "video"),
-    ...samples.filter((sample) => sample.kind === "image"),
-  ];
+  // Bright clips interleaved with the moodier ones, so the top row of the
+  // masonry reads well at every breakpoint. See exploreOrder for why.
+  const ordered = exploreOrder();
   // A 16:9 clip behind the hero, dimmed and blurred.
   const backdrop = samplesByAspect("video", "16:9")[0];
 

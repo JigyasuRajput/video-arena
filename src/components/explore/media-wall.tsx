@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { cn } from "cn";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,11 @@ import { SampleMediaDialog } from "@/components/explore/sample-media-dialog";
 import { startPlaybackWatcher } from "@/components/explore/playback-manager";
 import { useMediaParam } from "@/components/media/use-media-param";
 import type { Sample, SampleCategory } from "@/lib/samples";
+
+// useLayoutEffect warns when rendered on the server; pick once at module load
+// so the call site itself is never conditional.
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
 const CATEGORIES: { value: SampleCategory | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -23,12 +28,20 @@ const CATEGORIES: { value: SampleCategory | "all"; label: string }[] = [
 ];
 
 export function MediaWall({ samples }: { samples: Sample[] }) {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { mediaId, openMedia, closeMedia } = useMediaParam();
 
-  const category = (searchParams.get("cat") ?? "all") as SampleCategory | "all";
+  /**
+   * The filter is local state synced to the URL by hand.
+   *
+   * Going through the router - even `replace` with `scroll: false` - re-runs
+   * the route and jumps the page back to the top, which is jarring when you're
+   * halfway down the wall. `history.replaceState` updates the address bar
+   * without any navigation at all, so the scroll position simply stays put.
+   */
+  const [category, setCategoryState] = React.useState<SampleCategory | "all">(
+    () => (searchParams.get("cat") ?? "all") as SampleCategory | "all",
+  );
 
   React.useEffect(() => startPlaybackWatcher(), []);
 
@@ -40,14 +53,36 @@ export function MediaWall({ samples }: { samples: Sample[] }) {
     [samples, category],
   );
 
+  /**
+   * Filtering changes how tall the page is, so even with no navigation the
+   * browser clamps scrollY and the content slides under you. Anchor on the
+   * filter row instead: remember where it sat in the viewport, then correct
+   * scroll after the new list lays out so the chips you just clicked don't
+   * move. Falls back to the browser's clamp if the page is too short.
+   */
+  const filterRef = React.useRef<HTMLDivElement>(null);
+  const anchorRef = React.useRef<number | null>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    if (anchorRef.current === null) return;
+    const top = filterRef.current?.getBoundingClientRect().top;
+    if (top !== undefined) window.scrollBy(0, top - anchorRef.current);
+    anchorRef.current = null;
+  }, [category]);
+
   const setCategory = (next: SampleCategory | "all") => {
-    const params = new URLSearchParams(searchParams.toString());
+    anchorRef.current = filterRef.current?.getBoundingClientRect().top ?? null;
+    setCategoryState(next);
+    const params = new URLSearchParams(window.location.search);
     if (next === "all") params.delete("cat");
     else params.set("cat", next);
     params.delete("media");
     const query = params.toString();
-    // replace, not push - filtering shouldn't fill up the back button.
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    window.history.replaceState(
+      null,
+      "",
+      query ? `${window.location.pathname}?${query}` : window.location.pathname,
+    );
   };
 
   // Prev/next step through the *filtered* list, so arrows match what's on screen.
@@ -75,6 +110,7 @@ export function MediaWall({ samples }: { samples: Sample[] }) {
       </div>
 
       <div
+        ref={filterRef}
         className="mt-6 flex flex-wrap gap-2"
         role="group"
         aria-label="Filter by category"

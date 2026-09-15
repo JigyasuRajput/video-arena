@@ -9,6 +9,7 @@ import { Shuffle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { usePrefersReducedMotion } from "@/components/explore/use-reduced-motion";
 import { registerVideo, setVideoVisible } from "@/components/explore/playback-manager";
+import { DARK_PLACEHOLDER } from "@/lib/placeholder";
 import type { Sample } from "@/lib/samples";
 
 export function MediaCard({
@@ -86,7 +87,12 @@ export function MediaCard({
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1400px) 25vw, 20vw"
           priority={priority}
-          className="object-cover"
+          // Without an explicit placeholder the browser can paint the img box
+          // white before the pixels arrive. Solid --surface-2 keeps the card
+          // the same colour the whole way through.
+          placeholder="blur"
+          blurDataURL={DARK_PLACEHOLDER}
+          className="bg-surface-2 object-cover"
         />
       )}
 
@@ -101,7 +107,7 @@ export function MediaCard({
           preload="none"
           tabIndex={-1}
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 data-[playing=true]:opacity-100"
+          className="absolute inset-0 h-full w-full bg-surface-2 object-cover opacity-0 transition-opacity duration-300 data-[playing=true]:opacity-100"
           onPlaying={(event) =>
             event.currentTarget.setAttribute("data-playing", "true")
           }

@@ -22,6 +22,7 @@ import {
   VIDEO_MODELS,
   nearestDuration,
 } from "@/lib/models";
+import { DARK_PLACEHOLDER } from "@/lib/placeholder";
 import type { Aspect, Sample } from "@/lib/samples";
 
 export function Hero({ backdrop }: { backdrop?: Sample }) {
@@ -31,6 +32,46 @@ export function Hero({ backdrop }: { backdrop?: Sample }) {
   const [modelId, setModelId] = React.useState(DEFAULT_VIDEO_MODEL.id);
   const [prompt, setPrompt] = React.useState("");
   const [videoReady, setVideoReady] = React.useState(false);
+  const backdropRef = React.useRef<HTMLVideoElement>(null);
+
+  /**
+   * Drive the backdrop explicitly rather than trusting the autoplay attribute.
+   *
+   * Two things went wrong relying on `autoPlay` + an `onCanPlay` prop:
+   * `preload="auto"` is only a hint and browsers skip it on slow or metered
+   * connections, so the clip could sit at readyState 0 forever; and when it
+   * *did* load fast (cache), `canplay` fired before React attached the handler,
+   * so the fade-in never triggered and it stayed at opacity 0.
+   *
+   * So: call load() ourselves, check readyState in case we already missed the
+   * event, and retry play() on the first interaction if autoplay was blocked.
+   */
+  React.useEffect(() => {
+    const el = backdropRef.current;
+    if (!el || reducedMotion) return;
+
+    const markReady = () => setVideoReady(true);
+    const tryPlay = () => void el.play().then(markReady).catch(() => {});
+
+    // The event may already have fired before this effect ran.
+    if (el.readyState >= 2) markReady();
+
+    el.addEventListener("loadeddata", markReady);
+    el.addEventListener("playing", markReady);
+    el.load();
+    tryPlay();
+
+    // Autoplay can be refused until the page has been interacted with.
+    window.addEventListener("pointerdown", tryPlay, { once: true });
+    document.addEventListener("visibilitychange", tryPlay);
+
+    return () => {
+      el.removeEventListener("loadeddata", markReady);
+      el.removeEventListener("playing", markReady);
+      window.removeEventListener("pointerdown", tryPlay);
+      document.removeEventListener("visibilitychange", tryPlay);
+    };
+  }, [reducedMotion]);
 
   const model = VIDEO_MODELS.find((m) => m.id === modelId) ?? DEFAULT_VIDEO_MODEL;
   const [duration, setDuration] = React.useState(model.durations[0]);
@@ -74,11 +115,14 @@ export function Hero({ backdrop }: { backdrop?: Sample }) {
               fill
               priority
               sizes="100vw"
-              className="scale-105 object-cover blur-[2px]"
+              placeholder="blur"
+              blurDataURL={DARK_PLACEHOLDER}
+              className="scale-105 bg-surface-2 object-cover blur-[2px]"
             />
           )}
           {!reducedMotion && (
             <video
+              ref={backdropRef}
               src={backdrop.src}
               poster={backdrop.poster}
               muted
@@ -86,7 +130,6 @@ export function Hero({ backdrop }: { backdrop?: Sample }) {
               playsInline
               autoPlay
               preload="auto"
-              onCanPlay={() => setVideoReady(true)}
               className={cn(
                 "absolute inset-0 h-full w-full scale-105 object-cover blur-[2px] transition-opacity duration-700",
                 videoReady ? "opacity-100" : "opacity-0",

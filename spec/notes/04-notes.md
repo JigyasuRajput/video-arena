@@ -86,6 +86,48 @@ Verified live: all five routes 200, `/dev/ui` **404s in production** as
 designed, `/opengraph-image` renders, and both video and image sample files
 serve. Browser console clean on the deployed build.
 
+## Four fixes after the first live review
+
+**Hero backdrop never played.** It relied on the `autoPlay` attribute plus an
+`onCanPlay` prop, which has two independent failure modes and hits at least one
+of them intermittently: `preload="auto"` is only a hint and browsers skip it on
+slow or metered connections (leaving readyState 0 forever), and when the clip
+*did* load instantly from cache, `canplay` fired before React attached the
+handler, so the fade-in never triggered and it sat at opacity 0. Now driven
+from an effect that calls `load()` itself, checks `readyState` in case the
+event was already missed, listens on both `loadeddata` and `playing`, and
+retries `play()` on first pointerdown and on visibilitychange in case autoplay
+was refused.
+
+**Category chips jumped the page to the top.** `router.replace` with
+`scroll: false` still re-runs the route and resets scroll. The filter is now
+local state synced to the URL with `history.replaceState` — no navigation at
+all. That alone left a second, subtler problem: filtering makes the page
+shorter, so the browser clamps scrollY and the content slides under you. So the
+filter row is used as an anchor — its viewport offset is recorded before the
+change and scroll is corrected in a layout effect after. Measured: 1800 → 1800
+on a filter that still fills the page; Product (6 items) clamps because the
+page physically can't be that tall.
+
+Knock-on: `useMediaParam` now reads `window.location.search` rather than Next's
+`useSearchParams` snapshot. Next never sees a `replaceState`, so building the
+next URL from the stale snapshot silently dropped `?cat=` every time a card was
+opened.
+
+**Cards flashed white before images loaded.** `next/image` paints no
+placeholder by default. Every image now gets `placeholder="blur"` with a 1×1
+PNG of `--surface-2` (`src/lib/placeholder.ts`) plus a `bg-surface-2` class as
+a belt-and-braces. Verified in the server HTML: 42 dark placeholders, zero
+white backgrounds.
+
+**First tile was dark and muddy.** CSS multi-column fills each column top to
+bottom, so the visible top row is the *first item of each column* — and the
+break points move with the breakpoint and with content height, so those slots
+can't be targeted directly. `exploreOrder()` interleaves hand-picked bright
+clips with the rest so every even index is bright, and sinks the muddiest
+eleven to the tail so a column can never open on one. Index 0 is bright by
+construction.
+
 ## NOT done — carried into 07
 
 - **No Lighthouse run.** Spec 04 asks for mobile scores in the notes. Skipped

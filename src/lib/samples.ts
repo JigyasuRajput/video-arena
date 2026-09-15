@@ -106,3 +106,87 @@ export function creditLine(sample: Sample): string {
   const noun = sample.kind === "video" ? "Video" : "Photo";
   return `${noun} by ${sample.credit.author} on ${sample.credit.source}`;
 }
+
+/**
+ * Samples that read as bright and punchy at thumbnail size. Hand-picked by
+ * looking at them - there's no metadata that captures "eye-catching".
+ *
+ * The rest (night streets, smoke, fog, star fields) are perfectly good clips
+ * but they go muddy small, and a wall that opens on three dark rectangles
+ * looks broken rather than moody.
+ */
+const BRIGHT_IDS = [
+  "dancer-silhouette",
+  "coast-cliffs-aerial",
+  "img-ink-square",
+  "desert-dunes-wind",
+  "ocean-waves-vertical",
+  "portrait-wind-hair",
+  "snow-falling-pines",
+  "fireworks-night-sky",
+  "coffee-pour-square",
+  "img-city-bokeh-square",
+  "img-neon-alley",
+  "waterfall-forest-drop",
+  "img-mountain-lake",
+  "skate-street-run",
+  "img-waterfall-tall",
+  "img-coast-aerial",
+  "img-snow-trees",
+  "img-street-fashion",
+  "perfume-bottle-square",
+  "img-coffee-square",
+  "rain-on-glass",
+  "img-portrait-wind",
+  "drone-mountain-ridge",
+];
+
+/**
+ * The muddiest clips - near-black night streets, smoke on black, fog, star
+ * fields. Fine in the dialog at full size, but at thumbnail scale they read as
+ * empty grey boxes. Pushed to the very end so a column can never open on one.
+ */
+const SINK_IDS = [
+  "neon-street-rain",
+  "night-walk-city",
+  "car-night-drive",
+  "stars-night-sky",
+  "smoke-abstract-square",
+  "ink-water-vertical",
+  "forest-fog-morning",
+  "img-forest-fog",
+  "img-stars-landscape",
+  "img-smoke-tall",
+  "img-perfume-square",
+];
+
+/**
+ * Wall order.
+ *
+ * CSS multi-column fills each column top to bottom before starting the next,
+ * so the visible *top row* is the first item of every column - roughly indices
+ * 0, n, 2n... for n items per column. n changes with the breakpoint (2/3/4/5
+ * columns), so we can't target those slots directly.
+ *
+ * Alternating bright/dark means every even index is a bright clip. Column
+ * starts land on even indices at each of our breakpoints, so the top row comes
+ * up bright at any width, and index 0 is bright by construction.
+ */
+export function exploreOrder(kind?: SampleKind): Sample[] {
+  const pool = getSamples(kind);
+  const sink = new Set(SINK_IDS);
+
+  const bright = BRIGHT_IDS.map((id) => pool.find((s) => s.id === id)).filter(
+    (s): s is Sample => Boolean(s),
+  );
+  const brightIds = new Set(bright.map((s) => s.id));
+  const mid = pool.filter((s) => !brightIds.has(s.id) && !sink.has(s.id));
+  const tail = pool.filter((s) => sink.has(s.id));
+
+  const ordered: Sample[] = [];
+  for (let i = 0; i < Math.max(bright.length, mid.length); i += 1) {
+    if (bright[i]) ordered.push(bright[i]);
+    if (mid[i]) ordered.push(mid[i]);
+  }
+  return [...ordered, ...tail];
+}

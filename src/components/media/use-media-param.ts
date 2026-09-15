@@ -23,14 +23,28 @@ export function useMediaParam() {
 
   const mediaId = searchParams.get(PARAM);
 
+  // Read live from the address bar, not from Next's snapshot. Explore syncs its
+  // category filter with history.replaceState (to avoid a scroll jump), which
+  // Next's useSearchParams never sees - building from the stale snapshot would
+  // silently drop ?cat= every time a card was opened.
+  const currentParams = React.useCallback(
+    () =>
+      new URLSearchParams(
+        typeof window === "undefined"
+          ? searchParams.toString()
+          : window.location.search,
+      ),
+    [searchParams],
+  );
+
   const openMedia = React.useCallback(
     (id: string) => {
-      const next = new URLSearchParams(searchParams.toString());
+      const next = currentParams();
       next.set(PARAM, id);
       pushedRef.current += 1;
       router.push(`${pathname}?${next.toString()}`, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [currentParams, pathname, router],
   );
 
   const closeMedia = React.useCallback(() => {
@@ -39,13 +53,13 @@ export function useMediaParam() {
       router.back();
       return;
     }
-    const next = new URLSearchParams(searchParams.toString());
+    const next = currentParams();
     next.delete(PARAM);
     const query = next.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
       scroll: false,
     });
-  }, [pathname, router, searchParams]);
+  }, [currentParams, pathname, router]);
 
   return { mediaId, openMedia, closeMedia, isOpen: Boolean(mediaId) };
 }
