@@ -1,11 +1,28 @@
 # NOTE: .agent-logs/ is deliberately NOT ignored. The prompt/response logs are
 # part of the submission and ship with the repo.
 
+# dependencies
 node_modules/
+
+# next.js
 .next/
+/out/
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# vercel
 .vercel/
+
+# testing
+/coverage
+
+# misc
 .DS_Store
 *.log
+*.pem
+
+# env
 .env
 .env*.local
 
@@ -14,3 +31,7 @@ node_modules/
 
 # local UI reference screenshots of higgsfield.ai, not ours to publish
 design-refs/
+
+# raw stock downloads before processing (spec 02). only the processed files in
+# public/samples/ are committed.
+samples-raw/
