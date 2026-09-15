@@ -1,0 +1,13 @@
+# Vercel CLI uploads don't honour .gitignore, and samples-raw/ alone is ~200 MB
+# of unprocessed source media. Only the processed files in public/samples/ ship.
+samples-raw/
+design-refs/
+
+node_modules/
+.next/
+.git/
+
+# Submission artefacts - part of the repo, irrelevant to the build.
+.agent-logs/
+.claude/
+spec/
