@@ -14,6 +14,7 @@ import { Hint } from "@/components/create/hint";
 import { ModelPicker } from "@/components/create/model-picker";
 import { PromptBox } from "@/components/create/prompt-box";
 import type { ImageForm } from "@/components/create/use-image-form";
+import { useSubmitShortcut } from "@/components/create/use-submit-shortcut";
 import { unsupportedReason } from "@/lib/create/settings";
 import { IMAGE_MODELS } from "@/lib/models";
 
@@ -47,6 +48,7 @@ export function ImageBar({
   pending: boolean;
 }) {
   const fileRef = React.useRef<HTMLInputElement>(null);
+  const onKeyDown = useSubmitShortcut(onGenerate);
   const { model, settings } = form;
 
   const refsFull = form.refs.length >= model.maxRefs;
@@ -58,7 +60,10 @@ export function ImageBar({
         : undefined;
 
   return (
-    <div className="rounded-lg border border-border bg-surface/95 p-3 shadow-[var(--shadow-pop)] backdrop-blur-xl">
+    <div
+      onKeyDown={onKeyDown}
+      className="rounded-lg border border-border bg-surface/95 p-3 shadow-[var(--shadow-pop)] backdrop-blur-xl"
+    >
       {form.refs.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-2">
           {form.refs.map((ref, index) => (

@@ -23,6 +23,7 @@ import { Hint } from "@/components/create/hint";
 import { ModelPicker } from "@/components/create/model-picker";
 import { PromptBox } from "@/components/create/prompt-box";
 import type { VideoForm } from "@/components/create/use-video-form";
+import { useSubmitShortcut } from "@/components/create/use-submit-shortcut";
 import { unsupportedReason } from "@/lib/create/settings";
 import { VIDEO_MODELS } from "@/lib/models";
 
@@ -49,6 +50,7 @@ export function VideoPanel({
   canGenerate: boolean;
   pending: boolean;
 }) {
+  const onKeyDown = useSubmitShortcut(onGenerate);
   const { model, settings } = form;
 
   const endFrameReason = model.endFrame
@@ -58,7 +60,10 @@ export function VideoPanel({
     model.maxRefs > 0 ? undefined : unsupportedReason(model.name, "reference images");
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-4">
+    <div
+      onKeyDown={onKeyDown}
+      className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-4"
+    >
       {/* Start / end frames ------------------------------------------------ */}
       <section>
         <h2 className="text-xs font-semibold tracking-wide text-text-faint uppercase">

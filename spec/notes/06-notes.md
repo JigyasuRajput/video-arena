@@ -70,13 +70,37 @@ so that could double-toast.
   the start-frame slot, the prompt carried across, and the URL cleaned.
 - typecheck, lint, build clean; still only the three API routes are dynamic.
 
-## Known, and not a bug
+## The picker got fixed on the way through
 
-**Image results can be weak matches.** "neon city street at night in the rain"
-at 1:1 returned ink-in-water, bottles, a watch and city bokeh. The 1:1 pool is
-five images and none of them is a neon street - the scorer is doing the right
-thing inside the aspect it was asked for. It's a library-size limit, not a
-scoring fault. More 1:1 samples would fix it; `samples:fetch` is the lever.
+Live testing showed results that didn't match the prompt at all - "waves
+crashing on a rocky coast" came back as a night-time car interior, "ocean waves
+in slow motion" as ink-in-water. Three faults, all in `pick.ts`:
+
+1. **Zero-scoring samples sat in the top three** and a flat `hash % length`
+   gave them the same odds as a real match. Now a sample with no overlap only
+   appears if an image grid would otherwise be short, and it sorts last.
+2. **The hash overruled the score.** It now only breaks ties between samples at
+   the *best* score. Regenerate still varies - ties are common at this library
+   size, verified with four seeds giving two different clips - but a clear best
+   match wins every time, which is the right answer rather than a missing
+   feature.
+3. **No stemming**, so "waves" missed "wave" and "dunes" missed "dune". There's
+   a crude suffix trim now, applied to both sides with a 4-character floor.
+
+After: mountain lake → drone-mountain-ridge, rocky coast → coast-cliffs-aerial,
+city traffic → city-traffic-timelapse, snow/pines → snow-falling-pines, desert
+dunes → desert-dunes-wind, dancer/red light → dancer-silhouette, ocean waves →
+ocean-waves-vertical, fireworks → fireworks-night-sky.
+
+**What remains is a library limit, not a scoring one.** At 1:1 the desert prompt
+still returns coffee/bokeh/ink, because there is no desert square among the five
+1:1 images - the same prompt at 16:9 correctly leads with `img-desert-figure`.
+Aspect is a hard filter by spec, so the fix is more square samples;
+`samples:fetch` is the lever.
+
+**Cmd+Enter now works from the whole panel/bar**, not just the textarea. Tapping
+a chip moved focus off the prompt and silently killed the shortcut, which is
+exactly when you want it. `PromptBox` stops propagation so it can't fire twice.
 
 ## Also observed
 

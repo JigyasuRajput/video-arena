@@ -26,11 +26,22 @@ const STOP_WORDS = new Set([
   "image", "photo", "camera", "scene", "clip",
 ]);
 
+/**
+ * Crude stemming - just enough that "waves" matches "wave" and "dunes" matches
+ * "dune". Applied to both sides, so it only ever has to be self-consistent.
+ * The 4-character floor stops it chewing short words down to noise.
+ */
+function stem(word: string): string {
+  const trimmed = word.replace(/(ing|es|s)$/, "");
+  return trimmed.length >= 4 ? trimmed : word;
+}
+
 export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
     .split(/[^a-z0-9]+/)
-    .filter((word) => word.length > 2 && !STOP_WORDS.has(word));
+    .filter((word) => word.length > 2 && !STOP_WORDS.has(word))
+    .map(stem);
 }
 
 function score(sample: Sample, wanted: Set<string>): number {
@@ -92,18 +103,49 @@ export function pickSampleIds({
   // No word overlap at all: fall back to the whole pool rather than pretending
   // the arbitrary top of a list of zeroes is a match.
   const hasOverlap = scored[0].value > 0;
-  const shortlistSize = hasOverlap
-    ? Math.min(scored.length, Math.max(3, count * 2))
-    : scored.length;
-  const shortlist = scored.slice(0, shortlistSize);
 
-  // Rotate by the hash and take from the front: deterministic, and distinct by
-  // construction, which is what the image grid needs.
+  /**
+   * A sample that shares no words with the prompt never competes with one that
+   * does. Keeping them in "the top 3" was how "waves crashing on a rocky coast"
+   * came back with a night-time car interior - the coast clip scored 1, the
+   * other two scored 0, and a flat pick gave them equal odds.
+   *
+   * Zero-scorers only come back in to fill an image grid that would otherwise
+   * be short, and they sort behind everything that did match.
+   */
+  let shortlist = scored;
+  if (hasOverlap) {
+    const matching = scored.filter((entry) => entry.value > 0);
+    const capped = matching.slice(0, Math.max(3, count * 2));
+    shortlist =
+      capped.length >= count
+        ? capped
+        : [...capped, ...scored.filter((entry) => entry.value === 0)].slice(0, count);
+  }
+
   const hash = hashString(`${prompt.trim().toLowerCase()}|${seed ?? 0}`);
-  const offset = hash % shortlist.length;
+
+  /**
+   * The hash breaks ties; it doesn't overrule the score.
+   *
+   * A flat `hash % length` across the whole shortlist gave every entry an equal
+   * shot, and it showed: "ocean waves in slow motion" came back as ink-in-water
+   * with an ocean clip scoring twice as well right above it. So the lead is
+   * drawn only from the samples tied at the best score.
+   *
+   * Regenerate still moves whenever there's a tie at the top - which is most
+   * prompts, on a library this size - and when there's one clear best match,
+   * returning it every time is the right answer rather than a missing feature.
+   */
+  const best = shortlist[0].value;
+  const tied = shortlist.filter((entry) => entry.value === best).length;
+  const lead = hash % tied;
+
+  // Then take the rest in score order from there, so a grid gets the next-best
+  // matches and every id is distinct by construction.
   const picked: string[] = [];
   for (let i = 0; i < Math.min(count, shortlist.length); i += 1) {
-    picked.push(shortlist[(offset + i) % shortlist.length].sample.id);
+    picked.push(shortlist[(lead + i) % shortlist.length].sample.id);
   }
   return picked;
 }

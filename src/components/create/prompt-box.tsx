@@ -67,6 +67,9 @@ export function PromptBox({
         onKeyDown={(event) => {
           if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
             event.preventDefault();
+            // The panel/bar around this also listens, so that Cmd+Enter still
+            // works after you've tapped a chip. Stop here or it fires twice.
+            event.stopPropagation();
             onSubmit?.();
           }
         }}
