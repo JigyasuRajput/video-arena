@@ -11,3 +11,6 @@ node_modules/
 
 # capture-hook bookkeeping (pairing state only, no prompt/response content)
 .claude/hooks/.state/
+
+# local UI reference screenshots of higgsfield.ai, not ours to publish
+design-refs/
