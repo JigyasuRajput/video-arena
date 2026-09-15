@@ -99,7 +99,7 @@ Full file: `.agent-logs/2026-09-15_18-00-38_374ccb0b-9326-48b8-a462-eb47ed67418b
 ---
 session_id: 374ccb0b-9326-48b8-a462-eb47ed67418b
 date: 2026-09-15
-author: jigyasurajput-aktsk
+author: JigyasuRajput
 model: claude-opus-5
 tool: claude-code
 project: video-arena
@@ -110,7 +110,7 @@ last_prompt_time: 2026-09-15T18:01:12.030Z
 
 # Session Log - 2026-09-15
 
-Session: `374ccb0b` | Project: `video-arena` | Author: `jigyasurajput-aktsk`
+Session: `374ccb0b` | Project: `video-arena` | Author: `JigyasuRajput`
 
 ---
 
@@ -153,7 +153,7 @@ Full file: `.agent-logs/2026-09-15_18-01-27_b37d93b0-0d88-4db0-bb5e-e4dcfbaa6535
 ---
 session_id: b37d93b0-0d88-4db0-bb5e-e4dcfbaa6535
 date: 2026-09-15
-author: jigyasurajput-aktsk
+author: JigyasuRajput
 model: claude-opus-5
 tool: claude-code
 project: video-arena
@@ -164,7 +164,7 @@ last_prompt_time: 2026-09-15T18:02:04.041Z
 
 # Session Log - 2026-09-15
 
-Session: `b37d93b0` | Project: `video-arena` | Author: `jigyasurajput-aktsk`
+Session: `b37d93b0` | Project: `video-arena` | Author: `JigyasuRajput`
 
 ---
 
@@ -204,6 +204,17 @@ Both canary responses are the agent reasoning out loud about its own capture set
 both contain a factual slip — canary 1 predicts the model will backfill as
 `claude-opus-5[1m]`, and canary 2 opens by correcting that to `claude-opus-5`. Left in
 exactly as written. That is what the log is for.
+
+**One metadata correction, made deliberately and recorded here.** The canaries were first
+logged under `jigyasurajput-aktsk`, the handle of the authenticated `gh` account. The
+submission belongs to **`JigyasuRajput`**, so the `author:` frontmatter field and the
+`| Author:` header line in both log files were updated, and `capture.config.json` now
+writes the correct handle for every future session. Only the header region of each file was
+rewritten — nothing from the first `[LOG_ENTRY` marker onward was touched. That is why
+canary 1's response body a few lines above still says `author jigyasurajput-aktsk`: it is
+the verbatim record of what the agent actually said at the time, and rewriting it to match
+the new handle would be precisely the kind of after-the-fact tidying the brief rules out.
+Identity metadata gets corrected; the record of what was said does not.
 
 ---
 
