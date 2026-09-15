@@ -5,6 +5,24 @@ import { cn } from "cn";
 import { ImagePlus, X } from "lucide-react";
 
 const DEFAULT_ACCEPT = ["image/png", "image/jpeg", "image/webp"];
+const DEFAULT_MAX_MB = 10;
+
+export { DEFAULT_ACCEPT as IMAGE_ACCEPT, DEFAULT_MAX_MB as IMAGE_MAX_MB };
+
+/**
+ * The same type/size rules this slot enforces, for callers that need a bare
+ * file input instead of a drop target (the image page's `+` button).
+ * Returns the message to show, or null if the file is fine.
+ */
+export function validateImageFile(file: File, label: string): string | null {
+  if (!DEFAULT_ACCEPT.includes(file.type)) {
+    return `${label}: use a PNG, JPG or WebP image.`;
+  }
+  if (file.size > DEFAULT_MAX_MB * 1024 * 1024) {
+    return `${label}: that image is over ${DEFAULT_MAX_MB} MB.`;
+  }
+  return null;
+}
 
 type UploadSlotProps = {
   label: string;
@@ -36,7 +54,7 @@ function UploadSlot({
   onError,
   disabled = false,
   accept = DEFAULT_ACCEPT,
-  maxSizeMb = 10,
+  maxSizeMb = DEFAULT_MAX_MB,
   icon,
   size = "md",
   className,

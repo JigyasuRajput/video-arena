@@ -222,6 +222,21 @@ export function useLibraryReady(): boolean {
     if (rehydrateStarted) return;
     rehydrateStarted = true;
     void Promise.resolve(useLibrary.persist.rehydrate()).finally(() => {
+      // A row is written before the POST goes out, so a tab that dies in that
+      // window leaves one with no job id. Nothing can ever resolve it - the
+      // poller has nothing to ask about - so retire it rather than leave a
+      // card stuck at "Queued 0%" forever. Retry re-submits it.
+      const stranded = useLibrary
+        .getState()
+        .items.filter((item) => isActive(item) && !item.jobId);
+      for (const item of stranded) {
+        useLibrary
+          .getState()
+          .update(item.id, {
+            status: "failed",
+            error: "Interrupted before it started.",
+          });
+      }
       useLibrary.setState({ hydrated: true });
     });
   }, []);
