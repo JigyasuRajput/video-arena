@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo, Inter } from "next/font/google";
+import { Navbar } from "@/components/layout/navbar";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { site } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,11 +21,31 @@ const archivo = Archivo({
   axes: ["wdth"],
 });
 
-// Full title template, OG image and theme colour come in spec 03.
 export const metadata: Metadata = {
-  title: "Video Arena",
-  description:
-    "A Higgsfield style AI video and image creation UI. Generation is simulated.",
+  metadataBase: new URL(site.url),
+  title: {
+    default: `${site.name} · ${site.tagline}`,
+    template: `%s · ${site.name}`,
+  },
+  description: site.description,
+  applicationName: site.name,
+  openGraph: {
+    type: "website",
+    siteName: site.name,
+    title: `${site.name} · ${site.tagline}`,
+    description: site.description,
+    url: site.url,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} · ${site.tagline}`,
+    description: site.description,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0b",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -35,7 +57,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`dark ${inter.variable} ${archivo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg text-text">
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          <Navbar />
+          <div className="flex flex-1 flex-col">{children}</div>
+        </TooltipProvider>
         <Toaster />
       </body>
     </html>
