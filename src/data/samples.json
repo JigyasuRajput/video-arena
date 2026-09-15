@@ -1,1 +1,1076 @@
-[]
+[
+  {
+    "id": "neon-street-rain",
+    "kind": "video",
+    "src": "/samples/videos/neon-street-rain.mp4",
+    "poster": "/samples/posters/neon-street-rain.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "A rain-slicked neon street at night, camera pushing slowly forward past glowing signage. Reflections smear across the wet asphalt. Moody, saturated, cinematic.",
+    "tags": [
+      "neon",
+      "city",
+      "night",
+      "rain",
+      "street",
+      "reflections",
+      "cinematic"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Gaber Magdi",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/moody-night-drive-in-rain-with-neon-lights-35170756/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "portrait-wind-hair",
+    "kind": "video",
+    "src": "/samples/videos/portrait-wind-hair.mp4",
+    "poster": "/samples/posters/portrait-wind-hair.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "Close portrait of a woman as wind lifts her hair, she turns slowly toward the lens. Soft directional daylight, shallow depth of field, calm and intimate.",
+    "tags": [
+      "portrait",
+      "woman",
+      "hair",
+      "wind",
+      "close-up",
+      "soft light"
+    ],
+    "category": "people",
+    "credit": {
+      "author": "Ahmed \u061c",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-woman-in-a-red-dress-standing-on-the-beach-24879055/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "dancer-silhouette",
+    "kind": "video",
+    "src": "/samples/videos/dancer-silhouette.mp4",
+    "poster": "/samples/posters/dancer-silhouette.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "A dancer moving through a slow spin, body caught in a single hard light against darkness. Camera holds steady, motion blur trails the limbs. Dramatic and graphic.",
+    "tags": [
+      "dancer",
+      "dance",
+      "movement",
+      "silhouette",
+      "studio",
+      "motion"
+    ],
+    "category": "motion",
+    "credit": {
+      "author": "Andres Daza",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-woman-in-red-standing-in-front-of-a-red-light-19192489/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "skate-street-run",
+    "kind": "video",
+    "src": "/samples/videos/skate-street-run.mp4",
+    "poster": "/samples/posters/skate-street-run.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 8,
+    "prompt": "A skateboarder rolls through an empty concrete plaza, camera tracking alongside at knee height. Late afternoon sun, long shadows, loose documentary energy.",
+    "tags": [
+      "skateboard",
+      "skate",
+      "street",
+      "motion",
+      "urban",
+      "tracking shot"
+    ],
+    "category": "motion",
+    "credit": {
+      "author": "Martin.que",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-female-roller-skater-jumping-on-a-ramp-13436785/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "waterfall-forest-drop",
+    "kind": "video",
+    "src": "/samples/videos/waterfall-forest-drop.mp4",
+    "poster": "/samples/posters/waterfall-forest-drop.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "Water falls through mossy rock into a dark pool, shot straight on from close range. Fine mist catches the light. Cool green palette, slow and hypnotic.",
+    "tags": [
+      "waterfall",
+      "forest",
+      "water",
+      "moss",
+      "nature",
+      "green"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Cengiz Z",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/majestic-waterfall-flowing-over-rocks-37097027/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "night-walk-city",
+    "kind": "video",
+    "src": "/samples/videos/night-walk-city.mp4",
+    "poster": "/samples/posters/night-walk-city.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "A figure walks away down a night street, city lights blooming out of focus behind them. Handheld follow, warm streetlight against cool shadow.",
+    "tags": [
+      "night",
+      "city",
+      "walking",
+      "bokeh",
+      "street",
+      "cinematic"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Rafael Fernanz",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-dark-stairway-with-a-light-shining-on-it-18866692/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "ocean-waves-vertical",
+    "kind": "video",
+    "src": "/samples/videos/ocean-waves-vertical.mp4",
+    "poster": "/samples/posters/ocean-waves-vertical.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 8,
+    "prompt": "Ocean swell rolls and breaks, filmed from just above the waterline in slow motion. Foam spreads across deep blue-green. Weighty and meditative.",
+    "tags": [
+      "ocean",
+      "waves",
+      "sea",
+      "water",
+      "slow motion",
+      "blue"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "\u00c7a\u011fr\u0131 KANMAZ",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/majestic-ocean-waves-crashing-on-shore-30474577/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "street-fashion-walk",
+    "kind": "video",
+    "src": "/samples/videos/street-fashion-walk.mp4",
+    "poster": "/samples/posters/street-fashion-walk.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "A person in a long coat walks toward camera down a city pavement, coat moving with each step. Overcast light, muted palette, editorial and confident.",
+    "tags": [
+      "fashion",
+      "street style",
+      "walking",
+      "coat",
+      "editorial",
+      "city"
+    ],
+    "category": "people",
+    "credit": {
+      "author": "cottonbro studio",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-fashionable-man-and-a-woman-posing-9822035/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "ink-water-vertical",
+    "kind": "video",
+    "src": "/samples/videos/ink-water-vertical.mp4",
+    "poster": "/samples/posters/ink-water-vertical.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "Ink blooms and curls through clear water, backlit against black. Tendrils unfurl in slow motion. Abstract, organic, high contrast.",
+    "tags": [
+      "ink",
+      "water",
+      "abstract",
+      "smoke",
+      "slow motion",
+      "black"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "Dan Cristian P\u0103dure\u021b",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/abstract-shapes-of-violet-paint-underwater-15168371/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "fireworks-night-sky",
+    "kind": "video",
+    "src": "/samples/videos/fireworks-night-sky.mp4",
+    "poster": "/samples/posters/fireworks-night-sky.jpg",
+    "width": 720,
+    "height": 1280,
+    "aspect": "9:16",
+    "durationSec": 10,
+    "prompt": "Fireworks open across a black sky, sparks drifting down in long trails. Locked-off wide, deep shadow, bursts of warm colour.",
+    "tags": [
+      "fireworks",
+      "night",
+      "sky",
+      "lights",
+      "celebration",
+      "sparks"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "daniel Iakobovszky",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/fireworks-19732710/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "drone-mountain-ridge",
+    "kind": "video",
+    "src": "/samples/videos/drone-mountain-ridge.mp4",
+    "poster": "/samples/posters/drone-mountain-ridge.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "Aerial push across a mountain ridge, cloud sitting in the valleys below. Early light rakes the slopes. Vast, still, epic in scale.",
+    "tags": [
+      "drone",
+      "aerial",
+      "mountains",
+      "ridge",
+      "clouds",
+      "landscape"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Adrian  Hoparda",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/drone-footage-of-mountains-4250075/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "coast-cliffs-aerial",
+    "kind": "video",
+    "src": "/samples/videos/coast-cliffs-aerial.mp4",
+    "poster": "/samples/posters/coast-cliffs-aerial.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "Drone glides along a cliff edge where surf meets rock, water turning turquoise in the shallows. Bright midday sun, wide and sweeping.",
+    "tags": [
+      "coast",
+      "cliffs",
+      "aerial",
+      "ocean",
+      "drone",
+      "turquoise"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Matt Ryan",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/aerial-shot-of-coastal-cliffs-10030447/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "forest-fog-morning",
+    "kind": "video",
+    "src": "/samples/videos/forest-fog-morning.mp4",
+    "poster": "/samples/posters/forest-fog-morning.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "Fog drifts between tall pines, camera creeping forward at eye level. Light filters through in soft shafts. Muted greens, quiet and eerie.",
+    "tags": [
+      "forest",
+      "fog",
+      "mist",
+      "trees",
+      "morning",
+      "atmospheric"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "K",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-foggy-day-in-the-forest-4296589/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "desert-dunes-wind",
+    "kind": "video",
+    "src": "/samples/videos/desert-dunes-wind.mp4",
+    "poster": "/samples/posters/desert-dunes-wind.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "Wind lifts sand off the crest of a dune, ridgelines curving away to the horizon. Low sun carves hard shadow into the slopes. Warm, minimal, patient.",
+    "tags": [
+      "desert",
+      "dunes",
+      "sand",
+      "wind",
+      "golden hour",
+      "minimal"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Phillip Chan",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-desert-with-view-of-sunset-2055056/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "snow-falling-pines",
+    "kind": "video",
+    "src": "/samples/videos/snow-falling-pines.mp4",
+    "poster": "/samples/posters/snow-falling-pines.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "Snow falls steadily through a stand of dark pines, flakes catching the light as they pass. Static wide, cold blue-grey, hushed.",
+    "tags": [
+      "snow",
+      "winter",
+      "pines",
+      "forest",
+      "cold",
+      "falling"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "AP Vibes",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-snowy-path-in-the-woods-with-trees-27743078/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "car-night-drive",
+    "kind": "video",
+    "src": "/samples/videos/car-night-drive.mp4",
+    "poster": "/samples/posters/car-night-drive.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "A car moves through city streets after dark, headlights and signage streaking past the windows. Tracking alongside, deep blacks, neon spill.",
+    "tags": [
+      "car",
+      "night",
+      "driving",
+      "city",
+      "lights",
+      "cinematic"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Orhan Pergel",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-car-driving-through-a-city-at-night-19830439/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "ocean-slow-motion",
+    "kind": "video",
+    "src": "/samples/videos/ocean-slow-motion.mp4",
+    "poster": "/samples/posters/ocean-slow-motion.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "A wave curls and collapses in slow motion, spray hanging in the air at the lip. Backlit so the water glows green. Powerful and weightless at once.",
+    "tags": [
+      "ocean",
+      "wave",
+      "slow motion",
+      "spray",
+      "backlit",
+      "water"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Sorin Bianu",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/close-up-video-of-waves-crashing-on-shore-5604331/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "stars-night-sky",
+    "kind": "video",
+    "src": "/samples/videos/stars-night-sky.mp4",
+    "poster": "/samples/posters/stars-night-sky.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "The Milky Way wheels slowly overhead in timelapse, horizon dark and low in frame. Dense starfield, cold blue, enormous and silent.",
+    "tags": [
+      "stars",
+      "night sky",
+      "milky way",
+      "timelapse",
+      "space",
+      "astro"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "chris clark",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/day-and-night-over-city-13322952/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "rain-on-glass",
+    "kind": "video",
+    "src": "/samples/videos/rain-on-glass.mp4",
+    "poster": "/samples/posters/rain-on-glass.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 10,
+    "prompt": "Raindrops gather and run down a pane of glass, the world beyond thrown far out of focus. Macro, soft grey light, intimate and still.",
+    "tags": [
+      "rain",
+      "glass",
+      "window",
+      "droplets",
+      "macro",
+      "bokeh"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "Zuzanna Musial",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/raindrops-on-window-glass-close-up-5366344/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "city-traffic-timelapse",
+    "kind": "video",
+    "src": "/samples/videos/city-traffic-timelapse.mp4",
+    "poster": "/samples/posters/city-traffic-timelapse.jpg",
+    "width": 1280,
+    "height": 720,
+    "aspect": "16:9",
+    "durationSec": 9,
+    "prompt": "Traffic streams into light trails across a city intersection in timelapse, towers lit behind. High wide angle, saturated reds and ambers.",
+    "tags": [
+      "city",
+      "timelapse",
+      "traffic",
+      "light trails",
+      "night",
+      "urban"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Ivan Chumak",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/berlin-timelapse-night-city-traffic-lights-34665162/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "coffee-pour-square",
+    "kind": "video",
+    "src": "/samples/videos/coffee-pour-square.mp4",
+    "poster": "/samples/posters/coffee-pour-square.jpg",
+    "width": 720,
+    "height": 720,
+    "aspect": "1:1",
+    "durationSec": 10,
+    "prompt": "Coffee streams into a ceramic cup, crema swirling as it fills. Tight overhead macro, warm side light, rich browns against matte stone.",
+    "tags": [
+      "coffee",
+      "pour",
+      "drink",
+      "macro",
+      "product",
+      "warm"
+    ],
+    "category": "product",
+    "credit": {
+      "author": "Distill",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/coffee-at-the-morning-852348/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "perfume-bottle-square",
+    "kind": "video",
+    "src": "/samples/videos/perfume-bottle-square.mp4",
+    "poster": "/samples/posters/perfume-bottle-square.jpg",
+    "width": 720,
+    "height": 720,
+    "aspect": "1:1",
+    "durationSec": 10,
+    "prompt": "A glass bottle rotates slowly on a dark plinth, light raking across its facets. Studio lighting, deep shadow, premium and restrained.",
+    "tags": [
+      "perfume",
+      "bottle",
+      "glass",
+      "studio",
+      "product",
+      "rotating"
+    ],
+    "category": "product",
+    "credit": {
+      "author": "MART  PRODUCTION",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-bottle-of-perfume-next-to-a-white-rose-8447664/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "drink-splash-square",
+    "kind": "video",
+    "src": "/samples/videos/drink-splash-square.mp4",
+    "poster": "/samples/posters/drink-splash-square.jpg",
+    "width": 720,
+    "height": 720,
+    "aspect": "1:1",
+    "durationSec": 10,
+    "prompt": "Liquid splashes up the inside of a glass in slow motion, droplets suspended mid-air. Hard backlight, crisp highlights, clean and graphic.",
+    "tags": [
+      "drink",
+      "splash",
+      "liquid",
+      "glass",
+      "slow motion",
+      "product"
+    ],
+    "category": "product",
+    "credit": {
+      "author": "Kindel Media",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/pouring-of-water-to-the-glass-8093375/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "smoke-abstract-square",
+    "kind": "video",
+    "src": "/samples/videos/smoke-abstract-square.mp4",
+    "poster": "/samples/posters/smoke-abstract-square.jpg",
+    "width": 720,
+    "height": 720,
+    "aspect": "1:1",
+    "durationSec": 10,
+    "prompt": "Smoke curls upward through a single beam of light against black. Slow, continuous motion, monochrome, textural and abstract.",
+    "tags": [
+      "smoke",
+      "abstract",
+      "dark",
+      "light beam",
+      "monochrome",
+      "texture"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "Miguel \u00c1. Padri\u00f1\u00e1n",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/video/a-smoke-in-a-dark-room-4320605/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-perfume-square",
+    "kind": "image",
+    "src": "/samples/images/img-perfume-square.webp",
+    "width": 1200,
+    "height": 1200,
+    "aspect": "1:1",
+    "prompt": "Three dark glass bottles grouped on draped cloth, lit hard from one side so only the shoulders catch. Deep shadow, muted plum and olive, a quiet still life.",
+    "tags": [
+      "bottles",
+      "glass",
+      "still life",
+      "dark",
+      "product",
+      "moody"
+    ],
+    "category": "product",
+    "credit": {
+      "author": "Valentin Ivantsov",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/elegant-wine-bottle-still-life-with-floral-accent-34686253/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-watch-square",
+    "kind": "image",
+    "src": "/samples/images/img-watch-square.webp",
+    "width": 1200,
+    "height": 1200,
+    "aspect": "1:1",
+    "prompt": "Macro detail of a watch face, light grazing the dial texture. Extremely shallow focus, cool metal tones, precise and tactile.",
+    "tags": [
+      "watch",
+      "macro",
+      "detail",
+      "metal",
+      "product",
+      "close-up"
+    ],
+    "category": "product",
+    "credit": {
+      "author": "Bhop Phikanesuan",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/stainless-steel-watch-with-calendar-window-6343133/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-coffee-square",
+    "kind": "image",
+    "src": "/samples/images/img-coffee-square.webp",
+    "width": 1200,
+    "height": 1200,
+    "aspect": "1:1",
+    "prompt": "Overhead flat lay of a coffee cup on a worn wooden table, morning light falling across from the left. Warm, simple, editorial.",
+    "tags": [
+      "coffee",
+      "flat lay",
+      "overhead",
+      "table",
+      "morning",
+      "warm"
+    ],
+    "category": "product",
+    "credit": {
+      "author": "Arda Kayk\u0131s\u0131z",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/cup-of-coffee-on-tray-on-table-19873648/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-ink-square",
+    "kind": "image",
+    "src": "/samples/images/img-ink-square.webp",
+    "width": 1200,
+    "height": 1200,
+    "aspect": "1:1",
+    "prompt": "Ink suspended in water, frozen mid-bloom against a dark field. Fine filaments and soft edges. Abstract, saturated, organic.",
+    "tags": [
+      "ink",
+      "water",
+      "abstract",
+      "bloom",
+      "colour",
+      "dark"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "cottonbro studio",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/high-speed-photography-of-colorful-ink-diffusion-in-water-9669039/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-city-bokeh-square",
+    "kind": "image",
+    "src": "/samples/images/img-city-bokeh-square.webp",
+    "width": 1200,
+    "height": 1200,
+    "aspect": "1:1",
+    "prompt": "City lights thrown completely out of focus into overlapping discs of colour. Night, no subject, pure texture and glow.",
+    "tags": [
+      "bokeh",
+      "city lights",
+      "night",
+      "blur",
+      "abstract",
+      "glow"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "Dorota Semla",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/city-blurred-lights-at-night-15103614/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-portrait-wind",
+    "kind": "image",
+    "src": "/samples/images/img-portrait-wind.webp",
+    "width": 1152,
+    "height": 1440,
+    "aspect": "4:5",
+    "prompt": "A woman outdoors with hair caught mid-movement, looking just past the lens. Overcast light, soft contrast, natural and unposed.",
+    "tags": [
+      "portrait",
+      "woman",
+      "wind",
+      "hair",
+      "outdoor",
+      "natural light"
+    ],
+    "category": "people",
+    "credit": {
+      "author": "Alena Evseenko",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/woman-with-hair-blowing-in-wind-outdoors-37873744/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-street-fashion",
+    "kind": "image",
+    "src": "/samples/images/img-street-fashion.webp",
+    "width": 1152,
+    "height": 1440,
+    "aspect": "4:5",
+    "prompt": "Full-length street style frame against a plain city wall, strong silhouette, confident stance. Flat overcast light, muted tones, editorial.",
+    "tags": [
+      "fashion",
+      "street style",
+      "outfit",
+      "city",
+      "editorial",
+      "full length"
+    ],
+    "category": "people",
+    "credit": {
+      "author": "Hatice Baran",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/a-man-standing-on-a-sidewalk-16586906/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-desert-figure",
+    "kind": "image",
+    "src": "/samples/images/img-desert-figure.webp",
+    "width": 1152,
+    "height": 1440,
+    "aspect": "4:5",
+    "prompt": "A lone figure crosses a vast dune field, tiny against the ridgeline. Late sun, long shadow, scale-driven and cinematic.",
+    "tags": [
+      "desert",
+      "dunes",
+      "figure",
+      "scale",
+      "golden hour",
+      "cinematic"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Muhammed zeya",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/man-walking-at-desert-24723567/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-forest-fog",
+    "kind": "image",
+    "src": "/samples/images/img-forest-fog.webp",
+    "width": 1080,
+    "height": 1440,
+    "aspect": "3:4",
+    "prompt": "Tall trunks fading back into fog, layer on layer. Diffused grey light, desaturated greens, still and quiet.",
+    "tags": [
+      "forest",
+      "fog",
+      "mist",
+      "trees",
+      "layers",
+      "muted"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Musa Tu\u011frul Karata\u015f",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/trees-covered-in-fog-14845820/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-snow-trees",
+    "kind": "image",
+    "src": "/samples/images/img-snow-trees.webp",
+    "width": 1080,
+    "height": 1440,
+    "aspect": "3:4",
+    "prompt": "Snow-laden branches against a pale winter sky, weight pulling the boughs down. Cold blue-white, high key, minimal.",
+    "tags": [
+      "snow",
+      "trees",
+      "winter",
+      "cold",
+      "minimal",
+      "high key"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Mr Dr3igeteilt",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/snow-covered-forest-trees-in-winter-landscape-36099804/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-mountain-lake",
+    "kind": "image",
+    "src": "/samples/images/img-mountain-lake.webp",
+    "width": 1080,
+    "height": 1440,
+    "aspect": "3:4",
+    "prompt": "A still alpine lake mirroring the peaks above it, not a ripple on the surface. Cool dawn light, perfect symmetry, serene.",
+    "tags": [
+      "mountain",
+      "lake",
+      "reflection",
+      "alpine",
+      "dawn",
+      "symmetry"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "gang liang",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/scenic-mountain-lake-with-clear-reflections-36103492/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-coast-aerial",
+    "kind": "image",
+    "src": "/samples/images/img-coast-aerial.webp",
+    "width": 1440,
+    "height": 810,
+    "aspect": "16:9",
+    "prompt": "Straight-down aerial of surf meeting sand, water grading from white to deep blue. Bright sun, graphic and abstracted.",
+    "tags": [
+      "aerial",
+      "coast",
+      "beach",
+      "ocean",
+      "top down",
+      "blue"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Guilherme  Mello",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-imbe-beach-brazil-s-golden-shoreline-30567973/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-night-skyline",
+    "kind": "image",
+    "src": "/samples/images/img-night-skyline.webp",
+    "width": 1440,
+    "height": 810,
+    "aspect": "16:9",
+    "prompt": "A city skyline after dark, windows and signage scattered across the towers. Long exposure, deep blue hour, wide and expansive.",
+    "tags": [
+      "skyline",
+      "city",
+      "night",
+      "lights",
+      "long exposure",
+      "blue hour"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Johannes Plenio",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/skyline-of-a-modern-city-with-illuminated-buildings-at-night-20208915/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-stars-landscape",
+    "kind": "image",
+    "src": "/samples/images/img-stars-landscape.webp",
+    "width": 1440,
+    "height": 810,
+    "aspect": "16:9",
+    "prompt": "The Milky Way arcing over a dark horizon, stars dense from edge to edge. Long exposure, cold tones, vast and silent.",
+    "tags": [
+      "stars",
+      "milky way",
+      "night",
+      "astro",
+      "long exposure",
+      "landscape"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "Zeynep Sude  Emek",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/the-milky-way-over-the-hills-of-the-desert-27771787/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-neon-alley",
+    "kind": "image",
+    "src": "/samples/images/img-neon-alley.webp",
+    "width": 810,
+    "height": 1440,
+    "aspect": "9:16",
+    "prompt": "A narrow alley stacked with neon signage, colour bleeding onto wet ground. Night, heavy saturation, dense and atmospheric.",
+    "tags": [
+      "neon",
+      "alley",
+      "night",
+      "signs",
+      "saturated",
+      "city"
+    ],
+    "category": "cinematic",
+    "credit": {
+      "author": "yassir draka",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/urban-night-street-scene-with-illuminated-signs-31500917/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-waterfall-tall",
+    "kind": "image",
+    "src": "/samples/images/img-waterfall-tall.webp",
+    "width": 810,
+    "height": 1440,
+    "aspect": "9:16",
+    "prompt": "A thin waterfall dropping down a green rock face, spray softening the base. Long exposure smooths the water. Lush and cool.",
+    "tags": [
+      "waterfall",
+      "jungle",
+      "tropical",
+      "green",
+      "long exposure",
+      "water"
+    ],
+    "category": "nature",
+    "credit": {
+      "author": "Life  Folk",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/photo-of-waterfalls-4873858/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  },
+  {
+    "id": "img-smoke-tall",
+    "kind": "image",
+    "src": "/samples/images/img-smoke-tall.webp",
+    "width": 810,
+    "height": 1440,
+    "aspect": "9:16",
+    "prompt": "A single column of smoke rising and breaking apart against black. Side-lit, monochrome, sculptural.",
+    "tags": [
+      "smoke",
+      "abstract",
+      "dark",
+      "vertical",
+      "monochrome",
+      "sculptural"
+    ],
+    "category": "abstract",
+    "credit": {
+      "author": "DeVendran Indiran",
+      "source": "Pexels",
+      "sourceUrl": "https://www.pexels.com/photo/white-and-blue-smoke-5228726/",
+      "license": "Pexels License",
+      "licenseUrl": "https://www.pexels.com/license/"
+    }
+  }
+]

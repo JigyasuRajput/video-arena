@@ -13,7 +13,7 @@
  * Everything under samples-raw/ is gitignored. Only the processed output in
  * public/samples/ ships.
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -83,7 +83,7 @@ const SLOTS: Slot[] = [
   },
   {
     id: "skate-street-run", kind: "video", aspect: "9:16", category: "motion",
-    query: "skateboarding street skate", orientation: "portrait",
+    query: "skateboard skatepark silhouette sunset", orientation: "portrait",
     prompt: "A skateboarder rolls through an empty concrete plaza, camera tracking alongside at knee height. Late afternoon sun, long shadows, loose documentary energy.",
     tags: ["skateboard", "skate", "street", "motion", "urban", "tracking shot"],
   },
@@ -101,7 +101,7 @@ const SLOTS: Slot[] = [
   },
   {
     id: "ocean-waves-vertical", kind: "video", aspect: "9:16", category: "nature",
-    query: "ocean waves sea water", orientation: "portrait",
+    query: "waves crashing foam beach", orientation: "portrait",
     prompt: "Ocean swell rolls and breaks, filmed from just above the waterline in slow motion. Foam spreads across deep blue-green. Weighty and meditative.",
     tags: ["ocean", "waves", "sea", "water", "slow motion", "blue"],
   },
@@ -215,9 +215,9 @@ const SLOTS: Slot[] = [
   // --- images, 1:1 ---
   {
     id: "img-perfume-square", kind: "image", aspect: "1:1", category: "product",
-    query: "perfume bottle product still life",
-    prompt: "A frosted glass bottle on a stone surface, lit from one side so the edge catches. Deep shadow, muted palette, quiet luxury still life.",
-    tags: ["perfume", "bottle", "still life", "product", "studio", "minimal"],
+    query: "glass bottle minimal dark still life",
+    prompt: "Three dark glass bottles grouped on draped cloth, lit hard from one side so only the shoulders catch. Deep shadow, muted plum and olive, a quiet still life.",
+    tags: ["bottles", "glass", "still life", "dark", "product", "moody"],
   },
   {
     id: "img-watch-square", kind: "image", aspect: "1:1", category: "product",
@@ -307,7 +307,7 @@ const SLOTS: Slot[] = [
   // --- images, 9:16 ---
   {
     id: "img-neon-alley", kind: "image", aspect: "9:16", category: "cinematic",
-    query: "neon signs alley night city",
+    query: "neon light sign wet street night",
     prompt: "A narrow alley stacked with neon signage, colour bleeding onto wet ground. Night, heavy saturation, dense and atmospheric.",
     tags: ["neon", "alley", "night", "signs", "saturated", "city"],
   },
@@ -601,11 +601,31 @@ async function main() {
   );
 
   if (!dryRun && manifest.length > 0) {
+    // With --only we're re-doing a few slots, so merge over whatever is already
+    // in the manifest instead of replacing it with just those few.
+    let merged = manifest;
+    if (only) {
+      let existing: Sample[] = [];
+      try {
+        existing = JSON.parse(await readFile(MANIFEST_PATH, "utf8")) as Sample[];
+      } catch {
+        existing = [];
+      }
+      const replaced = new Set(manifest.map((entry) => entry.id));
+      merged = [
+        ...existing.filter((entry) => !replaced.has(entry.id)),
+        ...manifest,
+      ];
+    }
+
     // Keep manifest order stable and grouped: videos first, then images.
     const order = SLOTS.map((slot) => slot.id);
-    manifest.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-    await writeFile(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n");
-    console.log(`\nWrote ${manifest.length} entries to ${MANIFEST_PATH}`);
+    merged.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+    await writeFile(MANIFEST_PATH, JSON.stringify(merged, null, 2) + "\n");
+    console.log(
+      `\nWrote ${merged.length} entries to ${MANIFEST_PATH}` +
+        (only ? ` (${manifest.length} replaced)` : ""),
+    );
   }
 
   console.log(`Wrote ${allCandidates.length} candidates to ${RAW_DIR}/candidates.json`);

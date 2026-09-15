@@ -1,93 +1,91 @@
 # 02 - Sample library, notes
 
-## ⚠️ Blocked on the API key - no media collected yet
+## Done
 
-`PEXELS_API_KEY` was supposed to be in `.env.local`. There is no `.env.local` in
-the repo and the variable isn't exported in the shell either, so **nothing has
-been downloaded**. `src/data/samples.json` is `[]` and `public/samples/` is
-empty.
+41 samples collected, processed and committed: **24 videos** (10× 9:16,
+10× 16:9, 4× 1:1) and **17 images** (5× 1:1, 3× 4:5, 3× 3:4, 3× 16:9, 3× 9:16).
+**33.1 MB** total, well under the 80 MB cap. `samples:check` passes clean.
 
-Everything around the media is built and committed. To finish:
+Pexels only — Mixkit dropped to save time, per instruction. The `source` field
+still allows `"Mixkit"` so nothing needs changing if it comes back.
 
 ```bash
-echo 'PEXELS_API_KEY=your_key_here' > .env.local
-bun run samples:fetch --dry-run   # confirm all 41 slots resolve, downloads nothing
-bun run samples:fetch             # downloads + writes src/data/samples.json
+bun run samples:fetch --dry-run   # rehearse, downloads nothing
+bun run samples:fetch             # + writes src/data/samples.json
 bun run samples:prepare           # ffmpeg crop/scale/transcode
 bun run samples:check             # validate manifest against disk
 ```
 
-Until then `/credits` shows an empty state and Explore has no wall. **Spec 04
-cannot be finished without this.**
+## Two things the scripts got wrong on first run
 
-## Scope change
+**ffmpeg here is built without libwebp.** Homebrew's build has no webp encoder,
+so `-c:v libwebp` died on the first image. Images now go ffmpeg → intermediate
+PNG → `cwebp`. The script checks for `cwebp` up front and says what to install.
 
-Pexels only — Mixkit dropped to save time, per instruction. `source` in the
-type still allows `"Mixkit"` so nothing needs changing if it comes back.
+**One fixed CRF isn't enough.** `waterfall-forest-drop` came out at 8.2 MB
+against a 6 MB cap — busy water/snow/particle footage compresses far worse than
+static scenes. Videos now step CRF 28 → 32 → 36 → 40 until they fit (that clip
+landed at 4.0 MB). The webp path already did this with quality.
 
-## Curation
+**And a real bug in `--only`:** it rebuilt the manifest from just the re-fetched
+slots, which would have silently dropped the other 37 entries. It now merges
+over the existing manifest. Found before it did any damage, but only because I
+checked the entry count after re-running.
 
-I picked the slots rather than waiting for review. The table lives at the top of
-`scripts/fetch-pexels.ts`: 41 slots, each with its query, target aspect,
-category, and a prompt idea + tags I wrote.
+## Content review — 4 replaced
 
-Audited against the spec's target mix — it matches exactly:
+I built contact sheets from the posters and images and looked at all 41. Four
+broke the rules and were re-queried:
 
-| | |
+| id | problem |
 | --- | --- |
-| videos | 10× 9:16, 10× 16:9, 4× 1:1 (24) |
-| images | 5× 1:1, 3× 4:5, 3× 3:4, 3× 16:9, 3× 9:16 (17) |
-| categories | nature 13, cinematic 9, abstract 7, product 6, people 4, motion 2 |
+| `img-perfume-square` | **CHANEL, JIMMY CHOO and ESTÉE LAUDER** all fully legible |
+| `img-neon-alley` | not an alley at all — a retail rack of embroidered patches, covered in logos |
+| `skate-street-run` | storefront business signage, subjects who may be minors, and 2/3 empty pavement |
+| `ocean-waves-vertical` | a named vessel with legible hull lettering, and nothing like its prompt |
 
-No duplicate ids.
+Replacements are clean: a skater silhouette on a ramp at dusk, turquoise surf,
+unbranded dark bottles, and a wet night street.
 
-**On the "no brands / kids / famous people" rule:** the script filters Pexels
-alt text against a blocked-word list, but that is coarse and only covers photos
-(the video endpoint returns no alt text). It is *not* a guarantee. The picks
-need eyes on them once they download — I'd planned to generate contact sheets
-from the posters and check them before committing any media. Your `/credits`
-review is the second pass, not the first.
+`img-perfume-square` is now bottles rather than perfume, so its prompt idea and
+tags were rewritten to describe what's actually there. **The id still says
+"perfume"** — it's the filename and appears in `?media=` URLs. Cosmetic, left
+alone deliberately; rename it if it bothers you.
+
+**Judgement calls I made, worth a second opinion on `/credits`:**
+
+- `img-neon-alley` has a lit postal kiosk with Arabic signage. Institutional
+  signage, not a commercial logo. Being absolutist here would make the whole
+  "neon city" theme impossible — neon *is* signage.
+- `city-traffic-timelapse` has a generic "HOTEL" sign and a small van with a
+  generic word on it. No recognisable logo, illegible at card size.
+
+**Weaker than it sounds:** the automated blocked-word filter only runs against
+Pexels alt text, and the *video* endpoint returns none. So for all 24 clips the
+filter did nothing — the contact-sheet review was the only real check. Worth
+knowing if more get added later.
 
 ## Decisions
 
-**Everything is centre-cropped to an exact aspect.** Stock media comes in
-arbitrary ratios, but the manifest promises exact dimensions and `check-samples`
-verifies the real file against them. Cropping makes that true instead of
-approximate, and keeps the masonry wall predictable. Exact target sizes live in
-`ASPECT_DIMENSIONS` in `src/lib/samples.ts`, shared by all three scripts.
+**Everything is centre-cropped to an exact aspect.** Stock comes in arbitrary
+ratios, but the manifest promises exact dimensions and `check-samples` verifies
+the real file against them with ffprobe. Cropping makes that literally true and
+keeps the masonry wall predictable. Target sizes live in `ASPECT_DIMENSIONS` in
+`src/lib/samples.ts`, shared by all three scripts.
 
-**The manifest is generated, not hand-written.** `fetch-pexels.ts` emits
-`src/data/samples.json` by merging my curation table (prompt, tags, category,
-aspect) with the API's credit + id data. Hand-maintaining 41 entries of credit
-metadata would drift.
+**The manifest is generated, not hand-written** — `fetch-pexels.ts` merges the
+curation table (prompt, tags, category, aspect) with the API's credit data.
+41 entries of hand-maintained credit metadata would drift.
 
-**Downloads pick the smallest file that still covers the crop**, so we're not
-pulling 4K to make a 720p clip.
+**Downloads take the smallest file that still covers the crop**, so we aren't
+pulling 4K to make a 720p clip. Raw downloads were 209 MB; output is 33 MB.
 
-**WebP quality steps down** (82 → 50) until the image is under 400 KB, rather
-than guessing one quality and hoping.
+## Still unverified
 
-**`--dry-run` and `--only=<id>,<id>`** exist so a failed slot can be re-queried
-without re-downloading the other 40, and so the whole run can be rehearsed
-against the rate limit (200/hour) before committing to it.
+Some clips are weak content matches rather than rule violations — `neon-street-rain`
+and `night-walk-city` are both very dark and hard to read as their theme, and
+`ink-water-vertical` is washed out. Not replaced; flag on `/credits` if you want
+them swapped.
 
-## Verified
-
-- typecheck, lint, build clean. `/credits` renders its empty state, no console
-  errors.
-- All three scripts fail with a clear, actionable message: fetch explains the
-  missing key, prepare and check both say the manifest is empty.
-- Curation table audited programmatically against the spec's target mix.
-
-## NOT verified — the honest list
-
-None of the runtime paths have executed, because they all need the key:
-
-- No Pexels API call has ever been made. The response parsing, the
-  `coversAspect` crop maths, the video-file selection and the download loop are
-  **written but untested**. Expect at least one thing to need a fix on first run.
-- `prepare-samples.sh` has never processed a file. The ffmpeg crop expression,
-  the poster seek and the webp quality loop are unexercised.
-- `check-samples.ts` has never run against a populated manifest.
-
-ffmpeg 8.1 and ffprobe are both present locally, so nothing else blocks it.
+Only the poster frame of each video was reviewed, not the full 10 seconds.
+Something could appear mid-clip that isn't in frame at the 1s mark.

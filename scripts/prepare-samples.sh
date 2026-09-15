@@ -27,6 +27,12 @@ if ! command -v ffmpeg >/dev/null 2>&1; then
   exit 1
 fi
 
+# Homebrew ships ffmpeg without libwebp, so images go through cwebp instead.
+if ! command -v cwebp >/dev/null 2>&1; then
+  echo "cwebp not found on PATH. Install it (brew install webp) and re-run." >&2
+  exit 1
+fi
+
 if [ ! -f "$MANIFEST" ]; then
   echo "$MANIFEST not found. Run 'bun run samples:fetch' first." >&2
   exit 1
@@ -69,12 +75,18 @@ while IFS=$'\t' read -r id kind width height; do
       continue
     fi
 
-    ffmpeg -nostdin -loglevel error -y -i "$src" \
-      -t 10 \
-      -vf "${crop},scale=${width}:${height}:flags=lanczos" \
-      -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 28 -preset slow \
-      -movflags +faststart -an \
-      "$out"
+    # Step CRF up until it fits the 6 MB budget. Busy clips (water, snow,
+    # particles) don't compress anywhere near as well as static ones, so a
+    # single fixed CRF blows the cap on a handful of them.
+    for crf in 28 32 36 40; do
+      ffmpeg -nostdin -loglevel error -y -i "$src" \
+        -t 10 \
+        -vf "${crop},scale=${width}:${height}:flags=lanczos" \
+        -c:v libx264 -profile:v high -pix_fmt yuv420p -crf "$crf" -preset slow \
+        -movflags +faststart -an \
+        "$out"
+      [ "$(bytes_of "$out")" -le "$MAX_VIDEO_BYTES" ] && break
+    done
 
     # Poster from ~1s in; -ss before -i so it seeks rather than decodes.
     ffmpeg -nostdin -loglevel error -y -ss 1 -i "$src" -frames:v 1 \
@@ -110,14 +122,20 @@ while IFS=$'\t' read -r id kind width height; do
       continue
     fi
 
+    # Homebrew's ffmpeg is built without libwebp, so crop/scale with ffmpeg to
+    # an intermediate PNG and let cwebp do the encoding.
+    tmp_png="$(mktemp -t va-sample).png"
+    ffmpeg -nostdin -loglevel error -y -i "$src" \
+      -vf "${crop},scale=${width}:${height}:flags=lanczos" \
+      "$tmp_png"
+
     # Step quality down until it fits the budget rather than guessing once.
     for q in 82 74 66 58 50; do
-      ffmpeg -nostdin -loglevel error -y -i "$src" \
-        -vf "${crop},scale=${width}:${height}:flags=lanczos" \
-        -c:v libwebp -quality "$q" "$out"
+      cwebp -quiet -q "$q" "$tmp_png" -o "$out"
       ibytes="$(bytes_of "$out")"
       [ "$ibytes" -le "$MAX_IMAGE_BYTES" ] && break
     done
+    rm -f "$tmp_png"
 
     ibytes="$(bytes_of "$out")"
     printf "  %-26s %sx%-9s image %6s MB (q=%s)\n" \
