@@ -63,6 +63,29 @@ else's licence.
 - Dialog renders real sample data: Demo sample badge, aspect, **"Prompt idea"**
   (never "Prompt"), tags, linked credit + licence, Remix, no download.
 
+## Deployment (was not actually set up)
+
+**Vercel was never connected to this repo.** No `video-arena` project existed
+under the account (16 others did), no `.vercel/` dir, no GitHub deployment
+records — so every push up to this point deployed nothing.
+
+Created the project and connected the GitHub repo, so push-to-deploy now works
+for real. Live at **https://video-arena.vercel.app**.
+
+Two things that bit on the way:
+
+- **`.vercelignore` is required.** CLI uploads don't honour `.gitignore`, so the
+  first deploy tried to push **204 MB** — almost all of it `samples-raw/`, the
+  unprocessed source media. It failed mid-upload. Only the processed 42 MB in
+  `public/samples/` should ever ship.
+- `vercel link` appended `.env*` and `.vercel` to `.gitignore`. Both were
+  already covered, and the broader `.env*` would have masked a future
+  `.env.example`. Reverted.
+
+Verified live: all five routes 200, `/dev/ui` **404s in production** as
+designed, `/opengraph-image` renders, and both video and image sample files
+serve. Browser console clean on the deployed build.
+
 ## NOT done — carried into 07
 
 - **No Lighthouse run.** Spec 04 asks for mobile scores in the notes. Skipped
