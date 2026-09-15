@@ -1,16 +1,19 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/layout/page-header";
+
+import {
+  VideoCreate,
+  VideoCreateSkeleton,
+} from "@/components/create/video-create";
 
 export const metadata: Metadata = { title: "Video" };
 
-// Spec 05 builds the panel, the model picker and the simulated generation.
 export default function CreateVideoPage() {
+  // The whole page reads ?prompt / ?remix / ?autostart, so it needs the
+  // boundary useSearchParams requires. See spec 03's notes.
   return (
-    <main className="container-page flex-1 py-10">
-      <PageHeader
-        title="Create video"
-        subtitle="The settings panel and simulated generation land in spec 05."
-      />
-    </main>
+    <Suspense fallback={<VideoCreateSkeleton />}>
+      <VideoCreate />
+    </Suspense>
   );
 }
