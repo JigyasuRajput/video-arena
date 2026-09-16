@@ -100,8 +100,8 @@ export function MediaWall({ samples }: { samples: Sample[] }) {
         <div>
           <h2 className="display text-2xl text-accent sm:text-3xl">Trending</h2>
           <p className="mt-2 text-lg text-text-muted">
-            Every clip here is a free stock sample. Open one, then remix it into
-            your own shot.
+            Open any clip to see the idea behind it, then remix it into your own
+            shot.
           </p>
         </div>
         <Button asChild variant="primary" className="shrink-0">
