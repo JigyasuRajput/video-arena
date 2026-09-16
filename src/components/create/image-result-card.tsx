@@ -39,7 +39,8 @@ export function ImageResultCard({
   onRetry,
 }: {
   generation: Generation;
-  onOpenMedia: (sampleId: string) => void;
+  /** Takes the tile's index, not its sample id - see media-id.ts. */
+  onOpenMedia: (index: number) => void;
   onUseAsReference: (sample: Sample) => void;
   onRegenerate: () => void;
   onReuse: () => void;
@@ -83,7 +84,7 @@ export function ImageResultCard({
                 <>
                   <button
                     type="button"
-                    onClick={() => onOpenMedia(sample.id)}
+                    onClick={() => onOpenMedia(index)}
                     aria-label={`Open image ${index + 1}: ${request.prompt.slice(0, 60)}`}
                     className={cn(
                       "absolute inset-0 h-full w-full outline-none",

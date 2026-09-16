@@ -5,8 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { SampleMediaDialog } from "@/components/explore/sample-media-dialog";
 import { usePrefersReducedMotion } from "@/components/explore/use-reduced-motion";
+import { GenerationMediaDialog } from "@/components/media/generation-media-dialog";
+import {
+  generationMediaId,
+  parseGenerationMediaId,
+} from "@/components/media/media-id";
 import { useMediaParam } from "@/components/media/use-media-param";
 import { ImageBar } from "@/components/create/image-bar";
 import { ImageEmptyState } from "@/components/create/image-empty";
@@ -15,7 +19,7 @@ import { ImageResultCard } from "@/components/create/image-result-card";
 import { promptIsUsable } from "@/components/create/prompt-box";
 import { useImageForm } from "@/components/create/use-image-form";
 import { clearPrefillParams } from "@/components/create/video-prefill";
-import { exploreOrder, getSample } from "@/lib/samples";
+import { exploreOrder } from "@/lib/samples";
 import { clearDraft } from "@/lib/store/draft";
 import { useLibrary } from "@/lib/store/library";
 import {
@@ -75,11 +79,33 @@ export function ImageCreate() {
     seen.current = feed.length;
   }, [feed.length, reducedMotion]);
 
-  const mediaIds = React.useMemo(
-    () => feed.flatMap((generation) => generation.resultSampleIds),
+  /** One entry per tile, in the order the feed renders them. */
+  const slots = React.useMemo(
+    () =>
+      feed
+        .filter((generation) => generation.status === "completed")
+        .flatMap((generation) =>
+          generation.resultSampleIds.map((_, index) => ({ generation, index })),
+        ),
     [feed],
   );
-  const mediaIndex = mediaId ? mediaIds.indexOf(mediaId) : -1;
+
+  const parsed = parseGenerationMediaId(mediaId);
+  const openGeneration = parsed
+    ? feed.find((generation) => generation.id === parsed.generationId)
+    : undefined;
+  const slotIndex = parsed
+    ? slots.findIndex(
+        (slot) =>
+          slot.generation.id === parsed.generationId &&
+          slot.index === parsed.index,
+      )
+    : -1;
+
+  const goToSlot = (offset: number) => {
+    const next = slots[slotIndex + offset];
+    if (next) openMedia(generationMediaId(next.generation.id, next.index));
+  };
 
   return (
     <main className="flex flex-1 flex-col">
@@ -98,7 +124,9 @@ export function ImageCreate() {
               <ImageResultCard
                 key={generation.id}
                 generation={generation}
-                onOpenMedia={openMedia}
+                onOpenMedia={(index) =>
+                  openMedia(generationMediaId(generation.id, index))
+                }
                 onUseAsReference={form.addSampleRef}
                 onCancel={() => cancel(generation.id)}
                 onRetry={() => void retry(generation)}
@@ -128,15 +156,31 @@ export function ImageCreate() {
         </div>
       </div>
 
-      <SampleMediaDialog
-        sample={mediaId ? getSample(mediaId) : undefined}
+      {/* The generation's own panel, not the sample one. Arrows step through
+          every tile in the feed, so a grid of four walks tile to tile. */}
+      <GenerationMediaDialog
+        generation={openGeneration}
+        index={parsed?.index ?? 0}
         onClose={closeMedia}
-        onPrev={mediaIndex > 0 ? () => openMedia(mediaIds[mediaIndex - 1]) : undefined}
+        onPrev={slotIndex > 0 ? () => goToSlot(-1) : undefined}
         onNext={
-          mediaIndex >= 0 && mediaIndex < mediaIds.length - 1
-            ? () => openMedia(mediaIds[mediaIndex + 1])
+          slotIndex >= 0 && slotIndex < slots.length - 1
+            ? () => goToSlot(1)
             : undefined
         }
+        onRegenerate={(generation) => {
+          closeMedia();
+          void regenerate(generation);
+        }}
+        onReuse={(generation) => {
+          closeMedia();
+          form.reuse(generation);
+        }}
+        onDelete={(generation) => {
+          closeMedia();
+          remove(generation.id);
+          toast.success("Generation deleted");
+        }}
       />
     </main>
   );

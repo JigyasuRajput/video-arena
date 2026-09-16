@@ -7,7 +7,11 @@ import { Film } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SampleMediaDialog } from "@/components/explore/sample-media-dialog";
+import { GenerationMediaDialog } from "@/components/media/generation-media-dialog";
+import {
+  generationMediaId,
+  parseGenerationMediaId,
+} from "@/components/media/media-id";
 import { useMediaParam } from "@/components/media/use-media-param";
 import { promptIsUsable } from "@/components/create/prompt-box";
 import { useVideoForm } from "@/components/create/use-video-form";
@@ -15,7 +19,7 @@ import { VideoEmptyState } from "@/components/create/video-empty";
 import { VideoPanel } from "@/components/create/video-panel";
 import { clearPrefillParams, readVideoPrefill } from "@/components/create/video-prefill";
 import { VideoResultCard } from "@/components/create/video-result-card";
-import { exploreOrder, getSample } from "@/lib/samples";
+import { exploreOrder } from "@/lib/samples";
 import { clearDraft } from "@/lib/store/draft";
 import { useLibrary } from "@/lib/store/library";
 import {
@@ -68,11 +72,33 @@ export function VideoCreate() {
     generate();
   }, [generate, prefill.autostart, ready]);
 
-  const mediaIds = React.useMemo(
-    () => generations.flatMap((generation) => generation.resultSampleIds),
+  /** One entry per result, in the order the feed renders them. */
+  const slots = React.useMemo(
+    () =>
+      generations
+        .filter((generation) => generation.status === "completed")
+        .flatMap((generation) =>
+          generation.resultSampleIds.map((_, index) => ({ generation, index })),
+        ),
     [generations],
   );
-  const mediaIndex = mediaId ? mediaIds.indexOf(mediaId) : -1;
+
+  const parsed = parseGenerationMediaId(mediaId);
+  const openGeneration = parsed
+    ? generations.find((generation) => generation.id === parsed.generationId)
+    : undefined;
+  const slotIndex = parsed
+    ? slots.findIndex(
+        (slot) =>
+          slot.generation.id === parsed.generationId &&
+          slot.index === parsed.index,
+      )
+    : -1;
+
+  const goToSlot = (offset: number) => {
+    const next = slots[slotIndex + offset];
+    if (next) openMedia(generationMediaId(next.generation.id, next.index));
+  };
 
   return (
     <>
@@ -109,7 +135,9 @@ export function VideoCreate() {
                   <VideoResultCard
                     key={generation.id}
                     generation={generation}
-                    onOpenMedia={openMedia}
+                    onOpenMedia={(index) =>
+                      openMedia(generationMediaId(generation.id, index))
+                    }
                     onCancel={() => cancel(generation.id)}
                     onRetry={() => void retry(generation)}
                     onRegenerate={() => void regenerate(generation)}
@@ -140,17 +168,31 @@ export function VideoCreate() {
         </Button>
       </div>
 
-      <SampleMediaDialog
-        sample={mediaId ? getSample(mediaId) : undefined}
+      {/* The generation's own panel, not the sample one: what was asked of
+          which model, the prompt as typed, the frames that went in. */}
+      <GenerationMediaDialog
+        generation={openGeneration}
+        index={parsed?.index ?? 0}
         onClose={closeMedia}
-        onPrev={
-          mediaIndex > 0 ? () => openMedia(mediaIds[mediaIndex - 1]) : undefined
-        }
+        onPrev={slotIndex > 0 ? () => goToSlot(-1) : undefined}
         onNext={
-          mediaIndex >= 0 && mediaIndex < mediaIds.length - 1
-            ? () => openMedia(mediaIds[mediaIndex + 1])
+          slotIndex >= 0 && slotIndex < slots.length - 1
+            ? () => goToSlot(1)
             : undefined
         }
+        onRegenerate={(generation) => {
+          closeMedia();
+          void regenerate(generation);
+        }}
+        onReuse={(generation) => {
+          closeMedia();
+          form.reuse(generation);
+        }}
+        onDelete={(generation) => {
+          closeMedia();
+          remove(generation.id);
+          toast.success("Generation deleted");
+        }}
       />
     </>
   );

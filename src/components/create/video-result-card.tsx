@@ -38,7 +38,8 @@ export function VideoResultCard({
   onRetry,
 }: {
   generation: Generation;
-  onOpenMedia: (sampleId: string) => void;
+  /** Takes the result's index, not its sample id - see media-id.ts. */
+  onOpenMedia: (index: number) => void;
   onRegenerate: () => void;
   onReuse: () => void;
   onDelete: () => void;
@@ -83,7 +84,7 @@ export function VideoResultCard({
         ) : completed ? (
           <button
             type="button"
-            onClick={() => onOpenMedia(sample.id)}
+            onClick={() => onOpenMedia(0)}
             aria-label={`Open result: ${request.prompt.slice(0, 80)}`}
             className={cn(
               "group relative block w-full overflow-hidden rounded-md bg-surface-2 outline-none",
