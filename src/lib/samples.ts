@@ -12,7 +12,12 @@ export type SampleCategory =
 
 export type SampleCredit = {
   author: string;
-  source: "Pexels" | "Mixkit";
+  /**
+   * Pexels only. Spec 02 planned for Mixkit too and it was dropped to save
+   * time; the union kept `"Mixkit"` in case it came back. It didn't, and a
+   * source the credits page can never show is just a wrong type.
+   */
+  source: "Pexels";
   /** The item's page, never the file URL. */
   sourceUrl: string;
   license: string;
