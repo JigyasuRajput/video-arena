@@ -52,10 +52,37 @@ export function ImageCreate() {
 
   const canGenerate = promptIsUsable(form.prompt);
 
+  /**
+   * The generation this bar started, so we can empty the bar when it lands.
+   *
+   * Leaving the prompt sitting there after the images arrive meant Generate
+   * stayed armed with the input that had just been used, and tapping it again
+   * quietly produced the same four images a second time.
+   */
+  const startedHere = React.useRef<string | null>(null);
+
   const generate = React.useCallback(() => {
     if (!promptIsUsable(form.prompt)) return;
-    void submit(form.toRequest(), form.thumbs);
+    void submit(form.toRequest(), form.thumbs).then((id) => {
+      startedHere.current = id;
+    });
   }, [form, submit]);
+
+  const { prompt, setPrompt } = form;
+  React.useEffect(() => {
+    const id = startedHere.current;
+    if (!id) return;
+
+    const generation = generations.find((item) => item.id === id);
+    // Only on the way in. A failure keeps the prompt so Retry has something to
+    // retry, and a row restored from localStorage was never ours to clear.
+    if (generation?.status !== "completed") return;
+    startedHere.current = null;
+
+    // If they've started typing the next one while this was running, that's
+    // their text now, not the bar's leftovers.
+    if (prompt.trim() === generation.request.prompt) setPrompt("");
+  }, [generations, prompt, setPrompt]);
 
   const autostarted = React.useRef(false);
   React.useEffect(() => {
@@ -67,17 +94,44 @@ export function ImageCreate() {
   // The feed reads like a chat: oldest at the top, newest just above the bar.
   const feed = React.useMemo(() => [...generations].reverse(), [generations]);
 
-  const bottomRef = React.useRef<HTMLDivElement>(null);
-  const seen = React.useRef(feed.length);
+  /**
+   * Follow the newest card: on the way in, and again when it lands.
+   *
+   * Scrolling only when the feed grew wasn't enough. A smooth scroll animates
+   * toward a target measured when it starts, and at that point the new card is
+   * still a shimmer with a progress row under it. By the time the images arrive
+   * and the progress row goes away the page is a different height, the
+   * animation has long since finished a few pixels down, and Regenerate looks
+   * like it did nothing - measured 37px of a possible 361px. So it fires again
+   * when the newest generation settles.
+   *
+   * Scrolling the window rather than the spacer into view, because the prompt
+   * bar is `sticky bottom-0` and last in flow: at the document bottom it sits
+   * where it belongs with the new card above it, whereas aligning a spacer to
+   * the viewport bottom parks the card behind it.
+   */
+  const latest = feed[feed.length - 1];
+  const latestId = latest?.id;
+  const latestStatus = latest?.status;
+  const seen = React.useRef({
+    count: feed.length,
+    id: latestId,
+    status: latestStatus,
+  });
+
   React.useEffect(() => {
-    if (feed.length > seen.current) {
-      bottomRef.current?.scrollIntoView({
-        behavior: reducedMotion ? "auto" : "smooth",
-        block: "end",
-      });
-    }
-    seen.current = feed.length;
-  }, [feed.length, reducedMotion]);
+    const grew = feed.length > seen.current.count;
+    const settled =
+      latestStatus === "completed" &&
+      (latestId !== seen.current.id || seen.current.status !== "completed");
+    seen.current = { count: feed.length, id: latestId, status: latestStatus };
+    if (!grew && !settled) return;
+
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  }, [feed.length, latestId, latestStatus, reducedMotion]);
 
   /** One entry per tile, in the order the feed renders them. */
   const slots = React.useMemo(
@@ -140,7 +194,7 @@ export function ImageCreate() {
             ))}
           </div>
         )}
-        <div ref={bottomRef} className="h-2 shrink-0" />
+        <div className="h-2 shrink-0" />
       </div>
 
       {/* Docked, not fixed: it sits at the bottom of the viewport while there

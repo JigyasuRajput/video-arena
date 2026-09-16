@@ -27,7 +27,6 @@ import {
   useGenerations,
   useJobPoller,
   useLibraryReady,
-  newSeed,
 } from "@/lib/store/use-generation-queue";
 
 /** A handful of clips for the empty state, from the same ordering Explore uses. */
@@ -209,6 +208,3 @@ export function VideoCreateSkeleton() {
     </main>
   );
 }
-
-/** Regenerate keeps the settings and only moves the seed. */
-export { newSeed };

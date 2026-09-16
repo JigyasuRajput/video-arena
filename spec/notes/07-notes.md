@@ -180,6 +180,55 @@ Full walkthrough on `https://video-arena.vercel.app` in a cleared browser:
   device renders them visible. Explore's Remix button measured `opacity: 1`
   below `md` with no pointer over it.
 
+## Three more from a second live review
+
+**The image bar kept the prompt after the results landed.** Generate stayed
+armed with the input that had just been used, so tapping it again quietly made
+the same set a second time. The bar now empties when the generation *it* started
+completes - tracked by id, so a row restored from localStorage or someone else's
+generation can't clear it, and only on `completed`, so a failure keeps the prompt
+for Retry. If you've started typing the next one while it was running, that text
+is yours and stays. Video keeps its prompt on purpose: that's a standing panel,
+not a chat bar.
+
+**Regenerate returned the identical set.** The seed went into the hash and the
+lead was drawn `% tied`, so a prompt with one clear best match had `tied === 1`
+and the seed changed nothing at all: "a mountain lake at dawn" regenerated to the
+same four images forever. A dead button that looked like a working one.
+
+Two changes. The non-matching tail is no longer dropped from the ranked list, so
+there's somewhere to rotate to. And the seed is a step count (Regenerate
+increments it rather than randomising it) applied as an *offset from* the first
+run's lead, stepping by `count`:
+
+- offset, not an independent draw, because an independent draw could land back
+  on the result you already had - measured it doing exactly that, seed 1 and the
+  unseeded run both returning `drone-mountain-ridge`.
+- by `count`, not by 1, so a grid of four comes back as four new images rather
+  than the same three plus one.
+
+Results stay on prompt because the list is ordered by relevance: these are the
+next best matches. "waves crashing on a rocky coast" now walks
+coast-cliffs-aerial → ocean-slow-motion → ocean-waves-vertical →
+waterfall-forest-drop. Every first-run result is unchanged.
+
+**Regenerate didn't scroll to the new card.** The feed-grew effect did fire, but
+a smooth scroll animates toward a target measured when it starts, and at that
+point the new card is still a shimmer with a progress row under it. The page then
+grows, the animation has already finished a few pixels down, and Regenerate looks
+like it did nothing: measured **37px of a possible 361px**. It now also fires
+when the newest generation settles, which corrects for the height change, and it
+scrolls the window rather than a spacer into view - the prompt bar is
+`sticky bottom-0` and last in flow, so the document bottom is exactly where the
+new card sits above it, whereas aligning a spacer to the viewport bottom parks
+the card behind the bar. Measured after: top → 1354 of max 1353 on submit, 1310
+of 1309 once complete.
+
+Worth knowing for anyone testing this the same way: **Chrome does not animate
+`behavior: "smooth"` in a tab that isn't foregrounded**, so scroll assertions
+through browser automation silently read as "didn't scroll". The behaviour above
+was verified by temporarily forcing instant scrolling, then restored.
+
 ## Not done
 
 - **No Lighthouse run.** Skipped on instruction. Owed since spec 04.

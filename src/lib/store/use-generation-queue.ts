@@ -25,8 +25,17 @@ const POLL_MS = 1500;
 
 export type GenerationThumbs = Generation["thumbs"];
 
-export function newSeed(): number {
-  return Math.floor(Math.random() * 1_000_000_000);
+/**
+ * Regenerate steps the seed; it doesn't randomise it.
+ *
+ * A random seed rolls dice that can land on the set you already have, and with
+ * a shortlist only a handful long that happens often. Stepping means every
+ * press walks one position further down the relevance order, so Regenerate
+ * always returns something you haven't just seen, and the whole thing stays
+ * reproducible: same prompt, same seed, same result.
+ */
+export function nextSeed(current?: number): number {
+  return (current ?? 0) + 1;
 }
 
 /** Generations of one kind, newest first. */
@@ -71,12 +80,19 @@ export function useGenerationQueue() {
    * reacts instantly and a failed POST has somewhere to show its error.
    */
   const submit = React.useCallback(
-    async (request: GenerationRequest, thumbs: GenerationThumbs) => {
+    async (
+      request: GenerationRequest,
+      thumbs: GenerationThumbs,
+      // Returns the new row's id, so a caller can follow that one generation
+      // rather than guessing which of several is theirs. null if we refused to
+      // start it at all. A rejected POST still gets an id - the row exists, it
+      // just lands as failed.
+    ): Promise<string | null> => {
       if (useLibrary.getState().items.filter(isActive).length >= MAX_IN_FLIGHT) {
         toast("Four generations at a time", {
           description: "Wait for one of the running jobs to finish, then try again.",
         });
-        return false;
+        return null;
       }
 
       const id = newGenerationId();
@@ -91,15 +107,22 @@ export function useGenerationQueue() {
         resultSampleIds: [],
         progress: 0,
       });
-      return start(id, request);
+      await start(id, request);
+      return id;
     },
     [add, start],
   );
 
-  /** Same settings, fresh seed - so the scorer's shortlist rotates to a different clip. */
+  /** Same settings, next seed - so the scorer walks on to the next candidates. */
   const regenerate = React.useCallback(
     (generation: Generation) =>
-      submit({ ...generation.request, seed: newSeed() } as GenerationRequest, generation.thumbs),
+      submit(
+        {
+          ...generation.request,
+          seed: nextSeed(generation.request.seed),
+        } as GenerationRequest,
+        generation.thumbs,
+      ),
     [submit],
   );
 

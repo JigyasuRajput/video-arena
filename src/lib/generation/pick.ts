@@ -168,40 +168,62 @@ export function pickSampleIds({
    * the arbitrary top of a list of zeroes is a match. The tiebreak still leads
    * with the requested aspect.
    */
-  let shortlist = scored;
-  if (matching.length > 0) {
-    const capped = matching.slice(0, Math.max(3, count * 2));
-    shortlist =
-      capped.length >= count
-        ? capped
-        : [...capped, ...scored.filter((entry) => entry.value === 0)].slice(0, count);
-  }
-
-  const hash = hashString(`${prompt.trim().toLowerCase()}|${seed ?? 0}`);
+  /**
+   * Everything, best first: what matched in score order, then the rest.
+   *
+   * The non-matching tail used to be dropped unless a grid would be short. It
+   * stays now because it's what Regenerate rotates into once the handful of
+   * real matches runs out - see below.
+   */
+  const ranked =
+    matching.length > 0
+      ? [...matching, ...scored.filter((entry) => entry.value === 0)]
+      : scored;
 
   /**
-   * The hash breaks ties; it doesn't overrule the score.
+   * Where in the ranked list this result starts.
    *
-   * A flat `hash % length` across the whole shortlist gave every entry an equal
-   * shot, and it showed: "ocean waves in slow motion" came back as ink-in-water
-   * with an ocean clip scoring twice as well right above it. So the lead is
-   * drawn only from the samples tied at the best score.
-   *
-   * Regenerate still moves whenever there's a tie at the top - which is most
-   * prompts, on a library this size - and when there's one clear best match,
-   * returning it every time is the right answer rather than a missing feature.
+   * The hash breaks ties; it doesn't overrule the score. A flat
+   * `hash % length` across the whole list gave every entry an equal shot, and
+   * it showed: "ocean waves in slow motion" came back as ink-in-water with an
+   * ocean clip scoring twice as well right above it. So the lead is drawn only
+   * from the samples tied at the best score, and the same prompt with no seed
+   * always gives the same result.
    */
-  const best = shortlist[0];
-  const tied = shortlist.filter(
+  const hash = hashString(`${prompt.trim().toLowerCase()}|0`);
+  const best = ranked[0];
+  const tied = ranked.filter(
     (entry) => entry.value === best.value && entry.inAspect === best.inAspect,
   ).length;
-  const lead = hash % tied;
+  const baseLead = hash % tied;
 
-  // Then take the rest in score order from there, so a grid gets the next-best
+  /**
+   * Regenerate turns the page, by a whole page.
+   *
+   * This used to hash `prompt|seed` and take `% tied`, so a prompt with one
+   * clear best match had `tied === 1`, the seed changed nothing, and "a
+   * mountain lake at dawn" regenerated to the same four images every time. A
+   * dead button.
+   *
+   * The seed is a step count now (Regenerate increments it) and it's an offset
+   * from the first run's lead, not an independent draw - drawing independently
+   * meant step 1 could land back on the result you already had. Stepping by
+   * `count` rather than by 1 means a grid of four comes back as four new
+   * images rather than the same three plus one.
+   *
+   * Results stay on prompt because the list is ordered by relevance: these are
+   * the next best matches, not random ones.
+   */
+  const lead =
+    seed === undefined
+      ? baseLead
+      : (baseLead + seed * Math.max(1, count)) % ranked.length;
+
+  // Then take the rest in order from there, so a grid gets the next-best
   // matches and every id is distinct by construction.
   const picked: string[] = [];
-  for (let i = 0; i < Math.min(count, shortlist.length); i += 1) {
-    picked.push(shortlist[(lead + i) % shortlist.length].sample.id);
+  for (let i = 0; i < Math.min(count, ranked.length); i += 1) {
+    picked.push(ranked[(lead + i) % ranked.length].sample.id);
   }
   return picked;
 }

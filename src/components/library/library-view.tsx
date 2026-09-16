@@ -31,7 +31,7 @@ import { useMediaParam } from "@/components/media/use-media-param";
 import { putDraft } from "@/lib/store/draft";
 import { useLibrary, type Generation } from "@/lib/store/library";
 import {
-  newSeed,
+  nextSeed,
   useJobPoller,
   useLibraryReady,
 } from "@/lib/store/use-generation-queue";
@@ -127,7 +127,7 @@ export function LibraryView() {
       // Regenerate moves the seed so the scorer's shortlist rotates to a
       // different sample. Reuse settings keeps the request exactly as it was.
       request: autostart
-        ? { ...generation.request, seed: newSeed() }
+        ? { ...generation.request, seed: nextSeed(generation.request.seed) }
         : generation.request,
       thumbs: generation.thumbs,
       autostart,
