@@ -9,7 +9,7 @@ import { Check, Copy, Shuffle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MediaDialog } from "@/components/media/media-dialog";
-import { creditLine, type Sample } from "@/lib/samples";
+import type { Sample } from "@/lib/samples";
 
 export function SampleMediaDialog({
   sample,
@@ -48,7 +48,7 @@ export function SampleMediaDialog({
       onClose={onClose}
       onPrev={onPrev}
       onNext={onNext}
-      title={sample ? creditLine(sample) : "Media"}
+      title={sample ? sample.prompt.slice(0, 80) : "Media"}
       description={sample?.prompt}
       media={
         sample ? (
@@ -85,8 +85,11 @@ export function SampleMediaDialog({
       panel={
         sample ? (
           <>
+            {/* No "Demo sample" badge and no per-item credit here. The Demo
+                build pill in the nav says what this app is, and /credits lists
+                every file with its author and licence. Repeating it on each
+                item was noise. */}
             <div className="flex flex-wrap items-center gap-1.5">
-              <Badge variant="accentSoft">Demo sample</Badge>
               <Badge variant="outline">{sample.aspect}</Badge>
               {sample.durationSec !== undefined && (
                 <Badge variant="outline">
@@ -124,26 +127,6 @@ export function SampleMediaDialog({
                   {tag}
                 </span>
               ))}
-            </div>
-
-            <div className="text-sm text-text-muted">
-              <a
-                href={sample.credit.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline-offset-4 transition-colors hover:text-text hover:underline"
-              >
-                {creditLine(sample)}
-              </a>
-              {" · "}
-              <a
-                href={sample.credit.licenseUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline-offset-4 transition-colors hover:text-text hover:underline"
-              >
-                {sample.credit.license}
-              </a>
             </div>
 
             {/* No download button: it's stock under someone else's licence. */}

@@ -8,19 +8,11 @@ import { Copy, RefreshCw, RotateCcw, Settings2, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getImageModel, getVideoModel } from "@/lib/models";
-import { creditLine, getSample } from "@/lib/samples";
 import type { GenerationRequest } from "@/lib/generation/types";
 import type { Generation } from "@/lib/store/library";
 
@@ -142,51 +134,13 @@ export function FrameThumbs({ thumbs }: { thumbs: Generation["thumbs"] }) {
   );
 }
 
-/** One line for a single result, a popover for a grid of them. */
-export function SampleCredits({ sampleIds }: { sampleIds: string[] }) {
-  const samples = sampleIds
-    .map((id) => getSample(id))
-    .filter((sample): sample is NonNullable<typeof sample> => Boolean(sample));
-
-  if (samples.length === 0) return null;
-
-  const link = (sample: (typeof samples)[number]) => (
-    <a
-      key={sample.id}
-      href={sample.credit.sourceUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block underline-offset-4 transition-colors hover:text-text hover:underline"
-    >
-      {creditLine(sample)} · {sample.credit.license}
-    </a>
-  );
-
-  if (samples.length === 1) {
-    return <div className="text-sm text-text-faint">{link(samples[0])}</div>;
-  }
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="self-start text-left text-sm text-text-faint underline-offset-4 transition-colors hover:text-text hover:underline"
-        >
-          {samples.length} demo samples, see credits
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <PopoverHeader>
-          <PopoverTitle>Sample credits</PopoverTitle>
-        </PopoverHeader>
-        <div className="space-y-1.5 px-2 pb-1.5 text-sm text-text-muted">
-          {samples.map(link)}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
+/*
+ * There used to be a per-result credit line here ("Video by X on Pexels ·
+ * Pexels License", or a popover listing four of them for a grid). It's gone.
+ * The Simulated chip above already says the result isn't model output, and
+ * /credits lists every file with its author and licence. Three restatements of
+ * the same fact on one card was the single noisiest thing in the app.
+ */
 
 export function ResultActions({
   generation,

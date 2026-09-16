@@ -29,16 +29,8 @@ export function SiteFooter() {
           </a>
         </nav>
       </div>
-      <p className="container-page mt-3 text-sm text-text-faint">
-        Demo samples from Pexels, see{" "}
-        <Link
-          href="/credits"
-          className="underline-offset-4 transition-colors hover:text-text-muted hover:underline"
-        >
-          credits
-        </Link>
-        .
-      </p>
+      {/* One credits link, in the nav row above. The second line under it said
+          the same thing again. */}
     </footer>
   );
 }

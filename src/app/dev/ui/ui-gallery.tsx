@@ -161,7 +161,7 @@ export function UiGallery() {
         </h1>
         <p className="mt-3 max-w-xl text-lg text-text-muted">
           Dev only, not linked from the app, 404 in production. Hover and tab
-          through things — focus rings and hover states are part of what this
+          through things: focus rings and hover states are part of what this
           page is for.
         </p>
       </header>
@@ -366,7 +366,7 @@ export function UiGallery() {
             <Badge variant="accentSoft">
               <Sparkles /> Simulated
             </Badge>
-            <Badge>Demo sample</Badge>
+            <Badge>Default</Badge>
             <Badge variant="pink">Top</Badge>
             <Badge variant="pink">New</Badge>
             <Badge variant="accent">Popular</Badge>
@@ -384,7 +384,7 @@ export function UiGallery() {
                 className="h-full w-full object-cover"
               />
               <div className="absolute top-2 left-2 flex gap-1.5">
-                <Badge variant="overlay">Demo sample</Badge>
+                <Badge variant="overlay">Overlay</Badge>
                 <Badge variant="overlay">9:16</Badge>
               </div>
             </div>
@@ -402,7 +402,7 @@ export function UiGallery() {
             <Card interactive className="cursor-pointer">
               <CardHeader>
                 <CardTitle>Interactive</CardTitle>
-                <CardDescription>Hover me — border brightens.</CardDescription>
+                <CardDescription>Hover me, the border brightens.</CardDescription>
               </CardHeader>
               <CardContent className="pt-3">
                 <Badge variant="accent">Popular</Badge>
@@ -513,7 +513,7 @@ export function UiGallery() {
                   </div>
                   <div className="flex flex-col gap-3 border-l border-border p-5">
                     <div className="flex flex-wrap gap-1.5">
-                      <Badge variant="accentSoft">Demo sample</Badge>
+                      <Badge variant="accentSoft">Simulated</Badge>
                       <Badge variant="outline">16:9</Badge>
                     </div>
                     <DialogTitle>Prompt idea</DialogTitle>

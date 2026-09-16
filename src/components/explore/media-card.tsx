@@ -134,10 +134,9 @@ export function MediaCard({
           "opacity-100 transition-opacity duration-150 md:opacity-0 md:group-hover:opacity-100",
         )}
       >
+        {/* Aspect only. Every card saying "Demo sample" was the same sentence
+            two dozen times over; the Demo build pill in the nav covers it. */}
         <div className="mb-1.5 hidden flex-wrap items-center gap-1 md:flex">
-          <Badge variant="overlay" size="xs">
-            Demo sample
-          </Badge>
           <Badge variant="overlay" size="xs">
             {sample.aspect}
           </Badge>

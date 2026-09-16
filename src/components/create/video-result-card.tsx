@@ -11,7 +11,6 @@ import {
   RequestBadges,
   ResultActions,
   RetryButton,
-  SampleCredits,
 } from "@/components/create/result-meta";
 import { getSample } from "@/lib/samples";
 import type { Generation } from "@/lib/store/library";
@@ -113,9 +112,6 @@ export function VideoResultCard({
         <RequestBadges request={request} />
         <PromptText text={request.prompt} />
         <FrameThumbs thumbs={generation.thumbs} />
-        {generation.status === "completed" && (
-          <SampleCredits sampleIds={generation.resultSampleIds} />
-        )}
         <div className="mt-auto pt-1">
           <ResultActions
             generation={generation}

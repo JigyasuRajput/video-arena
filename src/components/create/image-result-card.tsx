@@ -14,7 +14,6 @@ import {
   RequestBadges,
   ResultActions,
   RetryButton,
-  SampleCredits,
 } from "@/components/create/result-meta";
 import { DARK_PLACEHOLDER } from "@/lib/placeholder";
 import { getSample, type Sample } from "@/lib/samples";
@@ -177,9 +176,6 @@ export function ImageResultCard({
         <RequestBadges request={request} />
         <PromptText text={request.prompt} />
         <FrameThumbs thumbs={generation.thumbs} />
-        {generation.status === "completed" && (
-          <SampleCredits sampleIds={generation.resultSampleIds} />
-        )}
         <ResultActions
           generation={generation}
           onRegenerate={onRegenerate}

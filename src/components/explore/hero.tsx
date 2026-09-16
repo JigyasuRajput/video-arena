@@ -150,10 +150,11 @@ export function Hero({ backdrop }: { backdrop?: Sample }) {
           <br />
           <span className="text-accent">from a single prompt</span>
         </h1>
+        {/* Describes the product, not the plumbing. The Demo build pill in the
+            nav is where "nothing is really generated" belongs. */}
         <p className="mt-5 max-w-xl text-lg text-text-muted">
-          Describe the shot you want. Pick a model, a length and a shape. This
-          demo returns a stock clip instead of calling a model — everything else
-          works exactly as it would.
+          Describe the shot you want. Pick a model, a length and a shape, add a
+          first frame if you have one, and watch it come back.
         </p>
 
         {/* Compact version of the create-page prompt bar. */}
