@@ -3,7 +3,6 @@ import {
   availableAspects,
   getSamples,
   nearestAspect,
-  samplesByAspect,
   type Aspect,
   type Sample,
   type SampleKind,
@@ -44,38 +43,62 @@ export function tokenize(text: string): string[] {
     .map(stem);
 }
 
-function score(sample: Sample, wanted: Set<string>): number {
-  if (wanted.size === 0) return 0;
-  const haystack = new Set([
-    ...sample.tags.flatMap((tag) => tokenize(tag)),
-    ...tokenize(sample.prompt),
-    ...tokenize(sample.category),
-  ]);
-  let hits = 0;
-  for (const word of wanted) if (haystack.has(word)) hits += 1;
-  return hits;
+/**
+ * Word counts as a hit if it matches exactly, or if one side is a prefix of
+ * the other with at least four characters shared.
+ *
+ * The prefix rule is there because the stemmer only trims `ing|es|s`, so
+ * "dancing" becomes "danc" while "dance" and "dancer" stay as they are and the
+ * three never meet. That is not academic: "woman dancing under a red light"
+ * scored the dancer clip exactly as high as a night-time car interior, because
+ * the only word either of them matched was "light".
+ *
+ * The four-character floor keeps it honest - "car" and "cat" can't collide.
+ */
+function matches(word: string, haystack: Set<string>): boolean {
+  if (haystack.has(word)) return true;
+  if (word.length < 4) return false;
+
+  for (const candidate of haystack) {
+    if (candidate.length < 4) continue;
+    if (candidate.startsWith(word) || word.startsWith(candidate)) return true;
+  }
+  return false;
+}
+
+/** Every word a sample can be found by. Static data, so worth keeping. */
+const haystacks = new Map<string, Set<string>>();
+
+function haystackFor(sample: Sample): Set<string> {
+  let words = haystacks.get(sample.id);
+  if (!words) {
+    words = new Set([
+      ...sample.tags.flatMap((tag) => tokenize(tag)),
+      ...tokenize(sample.prompt),
+      ...tokenize(sample.category),
+    ]);
+    haystacks.set(sample.id, words);
+  }
+  return words;
 }
 
 /**
- * Candidates in the requested aspect, topped up from the nearest aspects when
- * there aren't enough (only images ask for more than one, and a few aspects
- * only have three samples). The caller renders the extras object-cover inside
- * the requested aspect box so the grid still looks right.
+ * Matched words, counted flat.
+ *
+ * Weighting them by rarity was tried and reverted. It reads well in theory -
+ * "dancing" is in one clip, "light" is in a third of the library - but a prompt's
+ * rarest words are usually its *style*, not its subject, and the style then
+ * outvotes the subject. "drone flying over snowy mountain ridges at golden hour"
+ * started returning the desert clip, because "golden" and "hour" are rarer than
+ * "drone" and "mountain". Flat counting gets the subject right, which matters
+ * more.
  */
-function candidates(kind: SampleKind, aspect: Aspect, need: number): Sample[] {
-  const available = availableAspects(kind);
-  const best = nearestAspect(aspect, available) ?? aspect;
-  const pool = samplesByAspect(kind, best);
-  if (pool.length >= need) return pool;
-
-  const rest = getSamples(kind).filter((sample) => sample.aspect !== best);
-  const byCloseness = [...rest].sort((a, b) => {
-    const order = [a, b].map(
-      (sample) => (nearestAspect(aspect, [sample.aspect, best]) === sample.aspect ? 0 : 1),
-    );
-    return order[0] - order[1];
-  });
-  return [...pool, ...byCloseness];
+function score(sample: Sample, wanted: Set<string>): number {
+  if (wanted.size === 0) return 0;
+  const haystack = haystackFor(sample);
+  let hits = 0;
+  for (const word of wanted) if (matches(word, haystack)) hits += 1;
+  return hits;
 }
 
 export function pickSampleIds({
@@ -91,18 +114,44 @@ export function pickSampleIds({
   seed?: number;
   count?: number;
 }): string[] {
-  const pool = candidates(kind, aspect, count);
+  const pool = getSamples(kind);
   if (pool.length === 0) return [];
 
-  const wanted = new Set(tokenize(prompt));
-  const scored = pool
-    .map((sample) => ({ sample, value: score(sample, wanted) }))
-    // Ties broken by id so the order is stable across server instances.
-    .sort((a, b) => b.value - a.value || a.sample.id.localeCompare(b.sample.id));
+  // The aspect the library can actually serve - a few of them have no samples
+  // of a given kind at all.
+  const preferred = nearestAspect(aspect, availableAspects(kind)) ?? aspect;
 
-  // No word overlap at all: fall back to the whole pool rather than pretending
-  // the arbitrary top of a list of zeroes is a match.
-  const hasOverlap = scored[0].value > 0;
+  const wanted = new Set(tokenize(prompt));
+
+  /**
+   * Aspect is a tiebreaker, not a filter.
+   *
+   * It used to be a filter, and that was the single biggest reason results
+   * didn't match the prompt: "woman dancing under a red light" at 16:9 came
+   * back as a car interior, because the dancer clip is 9:16 and was never even
+   * a candidate. There are only ten videos per aspect - narrow enough that
+   * plenty of prompts have no good answer inside the one you picked.
+   *
+   * Sorting on score first and aspect second means a like-for-like match in the
+   * requested aspect still wins, but a better match from another aspect wins
+   * outright. Those render object-cover inside the requested aspect box, so the
+   * result is still the shape that was asked for.
+   */
+  const scored = pool
+    .map((sample) => ({
+      sample,
+      value: score(sample, wanted),
+      inAspect: sample.aspect === preferred,
+    }))
+    // Ties broken by id so the order is stable across server instances.
+    .sort(
+      (a, b) =>
+        b.value - a.value ||
+        Number(b.inAspect) - Number(a.inAspect) ||
+        a.sample.id.localeCompare(b.sample.id),
+    );
+
+  const matching = scored.filter((entry) => entry.value > 0);
 
   /**
    * A sample that shares no words with the prompt never competes with one that
@@ -111,11 +160,16 @@ export function pickSampleIds({
    * other two scored 0, and a flat pick gave them equal odds.
    *
    * Zero-scorers only come back in to fill an image grid that would otherwise
-   * be short, and they sort behind everything that did match.
+   * be short, and they sort behind everything that did match. The aspect
+   * tiebreak still applies to them, so filler stays in the shape that was asked
+   * for.
+   *
+   * No word overlap anywhere: fall back to the whole pool rather than pretending
+   * the arbitrary top of a list of zeroes is a match. The tiebreak still leads
+   * with the requested aspect.
    */
   let shortlist = scored;
-  if (hasOverlap) {
-    const matching = scored.filter((entry) => entry.value > 0);
+  if (matching.length > 0) {
     const capped = matching.slice(0, Math.max(3, count * 2));
     shortlist =
       capped.length >= count
@@ -137,8 +191,10 @@ export function pickSampleIds({
    * prompts, on a library this size - and when there's one clear best match,
    * returning it every time is the right answer rather than a missing feature.
    */
-  const best = shortlist[0].value;
-  const tied = shortlist.filter((entry) => entry.value === best).length;
+  const best = shortlist[0];
+  const tied = shortlist.filter(
+    (entry) => entry.value === best.value && entry.inAspect === best.inAspect,
+  ).length;
   const lead = hash % tied;
 
   // Then take the rest in score order from there, so a grid gets the next-best

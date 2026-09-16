@@ -36,7 +36,17 @@ export function ImageEmptyState({ samples }: { samples: Sample[] }) {
                 src={sample.src}
                 alt=""
                 fill
-                sizes="140px"
+                // The rendered width, per breakpoint. "140px" asked the
+                // optimiser for an asset narrower than the card actually is on
+                // a 2x display, so the fan came back soft.
+                sizes="(min-width: 640px) 128px, 112px"
+                // Eager, not lazy. These are the first thing on the page and
+                // there is nothing behind them: with the dark blur placeholder,
+                // five cards that haven't loaded yet read as five empty boxes
+                // rather than as loading. priority also takes them out of the
+                // lazy-loading intersection check, which is one less thing that
+                // can decide they aren't visible yet.
+                priority
                 placeholder="blur"
                 blurDataURL={DARK_PLACEHOLDER}
                 className="bg-surface-2 object-cover"
