@@ -6,6 +6,7 @@ import { frameFromSample, type Frame } from "@/components/create/use-frames";
 import { snapImageSettings, type ImageSettings } from "@/lib/create/settings";
 import { DEFAULT_IMAGE_MODEL, getImageModel, type ImageModel } from "@/lib/models";
 import { getSample, type Aspect } from "@/lib/samples";
+import { peekDraft } from "@/lib/store/draft";
 
 /** Same shape as the video page's prefill, one kind down. */
 export type ImagePrefill = {
@@ -30,6 +31,28 @@ export function defaultImageSettings(
 }
 
 export function readImagePrefill(params: ReadonlyURLSearchParams): ImagePrefill {
+  // Same hand-off as the video page: the library parks a whole request here
+  // rather than trying to express one in a URL.
+  const draft = peekDraft("image");
+  if (draft && draft.request.kind === "image") {
+    const request = draft.request;
+    const model = getImageModel(request.model) ?? DEFAULT_IMAGE_MODEL;
+    return {
+      prompt: request.prompt,
+      settings: snapImageSettings(model, {
+        model: model.id,
+        aspect: request.aspect,
+        quality: request.quality,
+        resolution: request.resolution,
+        count: request.count,
+      }).next,
+      refs: draft.thumbs.refs
+        .slice(0, model.maxRefs)
+        .map((src) => ({ previewUrl: src, thumb: src, isObjectUrl: false })),
+      autostart: draft.autostart,
+    };
+  }
+
   const model = getImageModel(params.get("model") ?? "") ?? DEFAULT_IMAGE_MODEL;
 
   let prompt = params.get("prompt") ?? "";

@@ -16,6 +16,7 @@ import { promptIsUsable } from "@/components/create/prompt-box";
 import { useImageForm } from "@/components/create/use-image-form";
 import { clearPrefillParams } from "@/components/create/video-prefill";
 import { exploreOrder, getSample } from "@/lib/samples";
+import { clearDraft } from "@/lib/store/draft";
 import { useLibrary } from "@/lib/store/library";
 import {
   useGenerationQueue,
@@ -42,6 +43,7 @@ export function ImageCreate() {
 
   React.useEffect(() => {
     clearPrefillParams();
+    clearDraft();
   }, []);
 
   const canGenerate = promptIsUsable(form.prompt);

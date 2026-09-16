@@ -11,6 +11,7 @@ import {
   type VideoModel,
 } from "@/lib/models";
 import { getSample, type Aspect } from "@/lib/samples";
+import { peekDraft } from "@/lib/store/draft";
 
 /**
  * Everything the video page can be linked into.
@@ -24,12 +25,22 @@ export type VideoPrefill = {
   prompt: string;
   settings: VideoSettings;
   startFrame: Frame | null;
+  endFrame: Frame | null;
+  refs: Frame[];
   /** Shows the removable "from remix" tag. */
   fromRemix: boolean;
   autostart: boolean;
 };
 
 const ASPECTS = new Set<string>(["16:9", "9:16", "1:1", "4:5", "3:4"]);
+
+/**
+ * A stored thumbnail is already the small data URL (or sample path) the slots
+ * want, so it goes straight back in as a frame with nothing to revoke.
+ */
+function frameFromThumb(src: string | undefined): Frame | null {
+  return src ? { previewUrl: src, thumb: src, isObjectUrl: false } : null;
+}
 
 export function defaultVideoSettings(model: VideoModel = DEFAULT_VIDEO_MODEL): VideoSettings {
   return snapVideoSettings(model, {
@@ -42,6 +53,32 @@ export function defaultVideoSettings(model: VideoModel = DEFAULT_VIDEO_MODEL): V
 }
 
 export function readVideoPrefill(params: ReadonlyURLSearchParams): VideoPrefill {
+  // Regenerate / Reuse settings from the library park the whole request in a
+  // draft and navigate here. It carries more than any URL could, so it wins
+  // over the params outright rather than merging with them.
+  const draft = peekDraft("video");
+  if (draft && draft.request.kind === "video") {
+    const request = draft.request;
+    const model = getVideoModel(request.model) ?? DEFAULT_VIDEO_MODEL;
+    return {
+      prompt: request.prompt,
+      settings: snapVideoSettings(model, {
+        model: model.id,
+        duration: request.duration,
+        aspect: request.aspect,
+        resolution: request.resolution,
+        audio: request.audio,
+      }).next,
+      startFrame: frameFromThumb(draft.thumbs.start),
+      endFrame: frameFromThumb(draft.thumbs.end),
+      refs: draft.thumbs.refs
+        .map(frameFromThumb)
+        .filter((frame): frame is Frame => Boolean(frame)),
+      fromRemix: false,
+      autostart: draft.autostart,
+    };
+  }
+
   const model = getVideoModel(params.get("model") ?? "") ?? DEFAULT_VIDEO_MODEL;
 
   let prompt = params.get("prompt") ?? "";
@@ -81,6 +118,8 @@ export function readVideoPrefill(params: ReadonlyURLSearchParams): VideoPrefill 
     prompt: prompt.slice(0, 1500),
     settings: snapVideoSettings(model, wanted).next,
     startFrame,
+    endFrame: null,
+    refs: [],
     fromRemix,
     autostart: params.get("autostart") === "1",
   };

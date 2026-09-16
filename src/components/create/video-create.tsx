@@ -16,6 +16,7 @@ import { VideoPanel } from "@/components/create/video-panel";
 import { clearPrefillParams, readVideoPrefill } from "@/components/create/video-prefill";
 import { VideoResultCard } from "@/components/create/video-result-card";
 import { exploreOrder, getSample } from "@/lib/samples";
+import { clearDraft } from "@/lib/store/draft";
 import { useLibrary } from "@/lib/store/library";
 import {
   useGenerationQueue,
@@ -42,9 +43,11 @@ export function VideoCreate() {
 
   useJobPoller();
 
-  // Drop the params now they've been read, so a refresh can't autostart twice.
+  // Drop the params and the library's draft now they've been read, so a
+  // refresh can't autostart twice.
   React.useEffect(() => {
     clearPrefillParams();
+    clearDraft();
   }, []);
 
   const canGenerate = promptIsUsable(form.prompt);

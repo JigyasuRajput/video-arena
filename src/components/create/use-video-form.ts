@@ -29,8 +29,8 @@ export function useVideoForm(prefill: VideoPrefill) {
   const [prompt, setPrompt] = React.useState(prefill.prompt);
   const [settings, setSettings] = React.useState<VideoSettings>(prefill.settings);
   const [startFrame, setStartFrame] = React.useState<Frame | null>(prefill.startFrame);
-  const [endFrame, setEndFrame] = React.useState<Frame | null>(null);
-  const [refs, setRefs] = React.useState<Frame[]>([]);
+  const [endFrame, setEndFrame] = React.useState<Frame | null>(prefill.endFrame);
+  const [refs, setRefs] = React.useState<Frame[]>(prefill.refs);
   const [fromRemix, setFromRemix] = React.useState(prefill.fromRemix);
 
   // Object URLs live as long as the document, which in an SPA is the whole

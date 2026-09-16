@@ -1,41 +1,37 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { FolderOpen } from "lucide-react";
 
 import { SiteFooter } from "@/components/layout/footer";
 import { PageHeader } from "@/components/layout/page-header";
-import { EmptyState } from "@/components/layout/empty-state";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { LibraryView } from "@/components/library/library-view";
 
 export const metadata: Metadata = { title: "Library" };
 
-// Spec 07 builds the real store-backed library.
 export default function LibraryPage() {
   return (
     <>
       <main className="container-page flex-1 py-10">
-        <PageHeader
-          title="Library"
-          subtitle="Saved in this browser only."
-        />
-        <EmptyState
-          className="mt-8"
-          icon={<FolderOpen />}
-          title="Nothing here yet"
-          description="Anything you generate shows up here. The library itself is built in spec 07."
-          action={
-            <>
-              <Button asChild variant="primary">
-                <Link href="/create/video">Create a video</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/create/image">Create an image</Link>
-              </Button>
-            </>
-          }
-        />
+        {/* The view drives its `?media=` dialog from useSearchParams, which
+            needs the boundary. */}
+        <Suspense fallback={<LibraryFallback />}>
+          <LibraryView />
+        </Suspense>
       </main>
       <SiteFooter />
+    </>
+  );
+}
+
+function LibraryFallback() {
+  return (
+    <>
+      <PageHeader title="Library" subtitle="Saved in this browser only." />
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {Array.from({ length: 8 }, (_, index) => (
+          <Skeleton key={index} className="aspect-video w-full rounded-lg" />
+        ))}
+      </div>
     </>
   );
 }
